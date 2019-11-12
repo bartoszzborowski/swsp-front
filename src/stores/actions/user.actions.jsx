@@ -7,13 +7,12 @@ export const userActions = {
     logout,
     register,
     getAll,
-    delete: _delete
+    delete: _delete,
 };
 
 function login(username, password) {
     return dispatch => {
         dispatch(request({ username }));
-
         userService.login(username, password)
             .then(
                 user => {
@@ -66,7 +65,7 @@ function getAll() {
 
         userService.getAll()
             .then(
-                users => dispatch(success(users)),
+                users => dispatch(success(users.data.users)),
                 error => dispatch(failure(error.toString()))
             );
     };

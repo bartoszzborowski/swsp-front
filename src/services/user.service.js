@@ -1,8 +1,12 @@
 // import config from 'config';
 // import { authHeader } from 'helpers';
+import gql from 'graphql-tag';
+import {client, getClient} from 'data/client/apolloClient';
 
 const config = {apiUrl: 'test'};
-const authHeader = () => {return null};
+const authHeader = () => {
+    return null
+};
 
 export const userService = {
     login,
@@ -11,23 +15,33 @@ export const userService = {
     getAll,
     getById,
     update,
-    delete: _delete
+    delete: _delete,
+    getLoggedUser
 };
 
+function getLoggedUser(){
+    return JSON.parse(localStorage.getItem('user')) || null;
+}
+
 function login(username, password) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    };
-
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
-        .then(handleResponse)
-        .then(user => {
+    const MUTATION = gql`
+        mutation($email: String, $password: String) {
+          userLogin(
+            input: { email: $email, password: $password }
+          ) {
+            id
+            email
+            token
+          }
+        }
+    `;
+    return client
+        .mutate({mutation: MUTATION, variables: {email: username, password: password}})
+        .then(result => {
+            const {data: {userLogin = {}}} = result;
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
-
-            return user;
+            localStorage.setItem('user', JSON.stringify(userLogin));
+            return userLogin;
         });
 }
 
@@ -37,12 +51,18 @@ function logout() {
 }
 
 function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
+    const QUERY = gql`
+        query {
+          users{
+            id
+            email
+            token
+          }
+        }
+    `;
 
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+    return getClient().query({query: QUERY});
+    // return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
 }
 
 function getById(id) {
@@ -57,7 +77,7 @@ function getById(id) {
 function register(user) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(user)
     };
 
@@ -67,11 +87,11 @@ function register(user) {
 function update(user) {
     const requestOptions = {
         method: 'PUT',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        headers: {...authHeader(), 'Content-Type': 'application/json'},
         body: JSON.stringify(user)
     };
 
-    return fetch(`${config.apiUrl}/users/${user.id}`, requestOptions).then(handleResponse);;
+    return fetch(`${config.apiUrl}/users/${user.id}`, requestOptions).then(handleResponse);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

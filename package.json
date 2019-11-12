@@ -8,7 +8,10 @@
     "@svgr/webpack": "4.3.2",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
-    "apollo-boost": "^0.4.4",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-http": "^1.5.16",
     "babel-eslint": "10.0.3",
     "babel-jest": "^24.9.0",
     "babel-loader": "8.0.6",
@@ -32,10 +35,12 @@
     "formik": "^2.0.3",
     "fs-extra": "7.0.1",
     "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
     "history": "latest",
     "html-webpack-plugin": "4.0.0-beta.5",
     "identity-obj-proxy": "3.0.0",
     "is-wsl": "^1.1.0",
+    "isomorphic-fetch": "^2.2.1",
     "jest": "24.9.0",
     "jest-environment-jsdom-fourteen": "0.1.0",
     "jest-resolve": "24.9.0",
@@ -158,7 +163,8 @@
             "config": "./config",
             "routes": "./src/routes",
             "stores": "./src/stores",
-            "services": "./src/services"
+            "services": "./src/services",
+            "data": "./src/data"
           }
         }
       ]

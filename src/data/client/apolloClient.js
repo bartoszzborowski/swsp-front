@@ -1,9 +1,9 @@
-import { ApolloLink } from 'apollo-boost';
-import { ApolloClient } from 'apollo-boost';
-import { setContext } from 'apollo-boost';
+import { ApolloClient } from 'apollo-client';
+import { setContext } from 'apollo-link-context';
 import fetch from 'isomorphic-fetch';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import CookiesJs from 'cookies-js';
+import {HttpLink} from "apollo-link-http";
+// import CookiesJs from 'cookies-js';
 
 
 const defaultOptions = {
@@ -17,10 +17,13 @@ const defaultOptions = {
     },
 };
 
+const link = new HttpLink({
+    uri: 'http://127.0.0.1:8020/graphql'
+});
+
 const config = {
-    fetch,
     cache: new InMemoryCache({ addTypename: false }),
-    link: ApolloLink.from([uploadLink]),
+    link,
     defaultOptions,
 };
 
@@ -31,7 +34,7 @@ export default client;
 
 export const getClient = token => {
     const authLink = setContext((_, { headers }) => {
-        const authTokenFromCookie = process.browser ? CookiesJs.get('token') : '';
+        const authTokenFromCookie = localStorage.get('user').token;
         const authToken = token || authTokenFromCookie || '';
         return {
             headers: {
@@ -42,9 +45,8 @@ export const getClient = token => {
     });
 
     const config = {
-        fetch,
+        link,
         cache: new InMemoryCache({ addTypename: false }),
-        link: ApolloLink.from([authLink, uploadLink]),
         defaultOptions,
     };
 

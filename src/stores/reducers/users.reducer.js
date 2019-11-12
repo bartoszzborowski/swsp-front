@@ -1,6 +1,6 @@
 import { userConstants } from 'stores/constants';
 
-export function users(state = {}, action) {
+export function users(state = {loading: false, error: null, items: null}, action) {
     switch (action.type) {
         case userConstants.GETALL_REQUEST:
             return {
