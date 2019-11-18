@@ -16,12 +16,7 @@ export const userService = {
     getById,
     update,
     delete: _delete,
-    getLoggedUser
 };
-
-function getLoggedUser(){
-    return JSON.parse(localStorage.getItem('user')) || null;
-}
 
 function login(username, password) {
     const MUTATION = gql`

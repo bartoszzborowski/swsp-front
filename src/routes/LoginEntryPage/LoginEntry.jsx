@@ -4,81 +4,97 @@ import { connect } from 'react-redux';
 
 import { userActions } from 'stores/actions';
 
+import style from './LoginEntry.module.scss';
+
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import { FormControlLabel } from '@material-ui/core';
+import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
+
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { Form } from './form';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 class LoginEntry extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        // reset login status
-        this.props.logout();
+    // reset login status
+    this.props.logout();
 
-        this.state = {
-            username: '',
-            password: '',
-            submitted: false
-        };
+    this.state = {
+      username: '',
+      password: '',
+      submitted: false,
+    };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+
+  handleSubmit = data => {
+    this.setState({ submitted: true });
+    const { email, password } = data;
+    if (email && password) {
+      this.props.login(email, password);
     }
+  };
 
-    handleChange(e) {
-        const { name, value } = e.target;
-        this.setState({ [name]: value });
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-
-        this.setState({ submitted: true });
-        const { username, password } = this.state;
-        if (username && password) {
-            this.props.login(username, password);
-        }
-    }
-
-    render() {
-        const { loggingIn } = this.props;
-        const { username, password, submitted } = this.state;
-        return (
-            <div className="col-md-6 col-md-offset-3">
-                <h2>Login</h2>
-                <form name="form" onSubmit={this.handleSubmit}>
-                    <div className={'form-group' + (submitted && !username ? ' has-error' : '')}>
-                        <label htmlFor="username">Username</label>
-                        <input type="text" className="form-control" name="username" value={username} onChange={this.handleChange} />
-                        {submitted && !username &&
-                        <div className="help-block">Username is required</div>
-                        }
-                    </div>
-                    <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>
-                        <label htmlFor="password">Password</label>
-                        <input type="password" className="form-control" name="password" value={password} onChange={this.handleChange} />
-                        {submitted && !password &&
-                        <div className="help-block">Password is required</div>
-                        }
-                    </div>
-                    <div className="form-group">
-                        <button className="btn btn-primary">Login</button>
-                        {loggingIn &&
-                        <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                        }
-                        <Link to="/register" className="btn btn-link">Register</Link>
-                    </div>
-                </form>
-            </div>
-        );
-    }
+  render() {
+    const { loggingIn } = this.props;
+    const { username, password, submitted } = this.state;
+    const initialValue = { email: '', password: '' };
+    return (
+      <Grid container component="main" className={style.root}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={style.image} />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} squere>
+          {loggingIn && <LinearProgress />}
+          <div className={style.paper}>
+            <Typography component="h1" variant="h5">
+              Zaloguj się
+            </Typography>
+            <Formik
+              initialValues={initialValue}
+              onSubmit={this.handleSubmit}
+              validationSchema={validationSchema}
+              render={props => <Form {...props} />}
+            />
+          </div>
+        </Grid>
+      </Grid>
+    );
+  }
 }
 
-function mapState(state) {
-    const { loggingIn = false } = state.authentication || {};
-    return { loggingIn };
-}
-
-const actionCreators = {
-    login: userActions.login,
-    logout: userActions.logout
+const mapStateToProps = state => {
+  const { loggingIn = false } = state.authentication || {};
+  return { loggingIn };
 };
 
-const connectedLoginPage = connect(mapState, actionCreators)(LoginEntry);
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email()
+    .required('Required'),
+  password: Yup.string('')
+    .min(8, 'Password must contain atleast 8 characters')
+    .required('Enter your password'),
+});
+
+const actionCreators = {
+  login: userActions.login,
+  logout: userActions.logout,
+};
+
+const connectedLoginPage = connect(mapStateToProps, actionCreators)(LoginEntry);
 export { connectedLoginPage as LoginPage };

@@ -1,0 +1,32 @@
+@import 'mixins';
+
+/* Debug Mode */
+$debug: false; // Keep it that way if not needed
+
+/* Font Stack and Sizes */
+$base-size: 16 !default;
+$font-size: ($base-size * 1px) !default;
+$rhythm: 26 !default;
+
+/* Layers */
+$z-absolute-top: 50 !default;
+$z-top: 40 !default;
+$z-higher: 30 !default;
+$z-high: 20 !default;
+$z-default: 10 !default;
+$z-zero: 0 !default;
+$z-below: -10 !default;
+$z-bottomless: -100 !default;
+
+/* Font Weights */
+$bolder: 800;
+$bold: 700;
+$regular-md: 600;
+$regular: 400;
+$thin-md: 300;
+$thin: 200;
+$inherit: 'inherit';
+
+/* Colors */
+$black-green: red;
+
