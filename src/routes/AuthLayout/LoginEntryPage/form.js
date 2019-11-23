@@ -1,8 +1,13 @@
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { FormControlLabel } from '@material-ui/core';
-import Checkbox from '@material-ui/core/Checkbox';
-import Button from '@material-ui/core/Button';
-import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+
+import { getLink, REGISTER_PAGE } from 'config/routes';
 
 export const Form = props => {
   const {
@@ -14,6 +19,8 @@ export const Form = props => {
     handleBlur,
     isValid,
   } = props;
+
+  console.log(getLink(REGISTER_PAGE));
 
   return (
     <form noValidate onSubmit={handleSubmit}>
@@ -60,6 +67,22 @@ export const Form = props => {
       >
         Sign in
       </Button>
+      <Grid container>
+        <Grid item xs>
+          <Link href="#" variant="body2">
+            Forgot password?
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link
+            component={RouterLink}
+            to={getLink(REGISTER_PAGE)}
+            variant="body"
+          >
+            {"Don't have an account? Sign Up"}
+          </Link>
+        </Grid>
+      </Grid>
     </form>
   );
 };

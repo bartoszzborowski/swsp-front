@@ -1,8 +1,12 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { AdminLayout } from '../../routes/AdminLayout';
 
-export const PrivateRoute = ({ component: Component, roles, ...rest }) => (
+export const PrivateRoute = ({
+  layout: Layout,
+  component: Component,
+  roles,
+  ...rest
+}) => (
   <Route
     {...rest}
     render={props => {
@@ -24,9 +28,9 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => (
 
       // authorised so return component
       return (
-        <AdminLayout>
+        <Layout>
           <Component {...props} />
-        </AdminLayout>
+        </Layout>
       );
     }}
   />

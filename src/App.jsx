@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 
 import { history } from 'helpers/history';
 import { PrivateRoute } from 'components/PrivateRoute';
-import { AdminLayout } from 'routes/AdminLayout';
-import { LoginPage } from 'routes/LoginEntryPage';
-import { RegisterPage } from 'routes/RegisterPage';
-import { HomePage } from './routes/HomePage';
-import { UsersPage } from './routes/UsersPage';
+
+import { Routes } from './config/routes';
+import RouteWithLayout from './components/RouteWithLayout/RouteWithLayout';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,14 +19,30 @@ class App extends React.Component {
   }
 
   render() {
+    console.log('tst');
+    const routing = Routes.map(route =>
+      route.private ? (
+        <PrivateRoute
+          path={route.path}
+          exact={route.exact}
+          component={route.component}
+          layout={route.layout}
+        />
+      ) : (
+        <RouteWithLayout
+          layout={route.layout}
+          path={route.path}
+          exact={route.exact}
+          component={route.component}
+        />
+      )
+    );
+
     return (
       <>
         <Router history={history}>
           <Switch>
-            <PrivateRoute exact path="/" component={HomePage} />
-            <PrivateRoute path="/users" component={UsersPage} />
-            <Route path="/login" component={LoginPage} />
-            <Route path="/register" component={RegisterPage} />
+            {routing}
             <Redirect from="*" to="/" />
           </Switch>
         </Router>
