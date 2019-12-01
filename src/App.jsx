@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, Switch, Redirect } from 'react-router-dom';
+import { Router, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from 'helpers/history';
@@ -19,7 +19,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('tst');
     const routing = Routes.map(route =>
       route.private ? (
         <PrivateRoute
@@ -27,6 +26,7 @@ class App extends React.Component {
           exact={route.exact}
           component={route.component}
           layout={route.layout}
+          key={route.path}
         />
       ) : (
         <RouteWithLayout
@@ -34,6 +34,7 @@ class App extends React.Component {
           path={route.path}
           exact={route.exact}
           component={route.component}
+          key={route.path}
         />
       )
     );

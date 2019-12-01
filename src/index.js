@@ -8,13 +8,29 @@ import 'typeface-roboto';
 import { StylesProvider } from '@material-ui/core/styles';
 
 import * as serviceWorker from './serviceWorker';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import { ThemeProvider } from '@material-ui/styles';
+import { purple } from '@material-ui/core/colors';
+
+const theme = createMuiTheme({
+  // overrides: {
+  //   MuiSvgIcon: {
+  //     root: {
+  //       width: '1rem',
+  //       height: '1rem',
+  //     },
+  //   },
+  // },
+});
 
 ReactDOM.render(
-  <Provider store={store}>
-    <StylesProvider injectFirst>
-      <App />
-    </StylesProvider>
-  </Provider>,
+  <ThemeProvider theme={theme}>
+    <Provider store={store}>
+      <StylesProvider injectFirst>
+        <App />
+      </StylesProvider>
+    </Provider>
+  </ThemeProvider>,
   document.getElementById('root')
 );
 

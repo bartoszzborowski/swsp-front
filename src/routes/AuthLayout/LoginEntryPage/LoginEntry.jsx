@@ -16,16 +16,9 @@ class LoginEntry extends React.Component {
 
     // reset login status
     this.props.logout();
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(e) {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
   }
 
   handleSubmit = data => {
-    this.setState({ submitted: true });
     const { email, password } = data;
     if (email && password) {
       this.props.login(email, password);
