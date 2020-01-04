@@ -29,7 +29,10 @@ const SidebarNav = props => {
       <List {...rest} className={className}>
         {pages.map(page =>
           page.nested ? (
-            <SidebarNavNested key={'nested-sidebar'} nestedPage={page} />
+            <SidebarNavNested
+              key={`nested-sidebar-${page.title}`}
+              nestedPage={page}
+            />
           ) : (
             <ListItem
               selected={page.href === path}

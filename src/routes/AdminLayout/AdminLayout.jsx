@@ -36,7 +36,11 @@ import {
   LOGIN_PAGE,
   SETTINGS_PAGE,
   SETTINGS_PAGE_GENERAL,
+  SETTINGS_PAGE_MAIL,
+  SETTINGS_PAGE_PAYMENT,
   SETTINGS_PAGE_SESSION,
+  STUDENT_INFO_LIST_PAGE,
+  STUDENT_INFO_PAGE,
 } from 'config/routes';
 import SidebarNav from './components/SidebarNav/SidebarNav';
 
@@ -68,9 +72,15 @@ class AdminLayout extends React.Component {
         icon: <DashboardIcon />,
       },
       {
-        title: 'Users',
-        href: '/users',
+        title: 'Student info',
+        href: getLink(STUDENT_INFO_PAGE),
         icon: <PeopleIcon />,
+        nested: [
+          {
+            title: 'Student list',
+            href: getLink(STUDENT_INFO_LIST_PAGE),
+          },
+        ],
       },
       {
         title: 'Products',
@@ -109,6 +119,14 @@ class AdminLayout extends React.Component {
           {
             title: 'Session',
             href: getLink(SETTINGS_PAGE_SESSION),
+          },
+          {
+            title: 'Email Settings',
+            href: getLink(SETTINGS_PAGE_MAIL),
+          },
+          {
+            title: 'Payment Settings',
+            href: getLink(SETTINGS_PAGE_PAYMENT),
           },
           {
             title: 'Test',
@@ -184,7 +202,7 @@ class AdminLayout extends React.Component {
             [style.drawerClose]: !open,
           })}
           classes={{
-            paper: clsx({
+            paper: clsx(style.drawer, {
               [style.drawerOpen]: open,
               [style.drawerClose]: !open,
             }),

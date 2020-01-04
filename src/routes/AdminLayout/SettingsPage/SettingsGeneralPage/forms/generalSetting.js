@@ -1,31 +1,11 @@
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
 import React from 'react';
-// import TextField from '@material-ui/core/TextField';
-import { FormControlLabel } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
-
-import { getLink, REGISTER_PAGE } from 'config/routes';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import GradientButton from 'components/Button/GradientButton';
 import TextFieldCustom from 'routes/AdminLayout/components/TextFieldCustom/TextFieldCustom';
 import TextField from '@material-ui/core/TextField';
 
 export const GeneralSetting = props => {
-  const {
-    values: { schoolName, address, city, area, schoolEmail },
-    errors,
-    touched,
-    handleSubmit,
-    handleChange,
-    handleBlur,
-    isValid,
-  } = props;
+  const { handleSubmit, handleChange, isValid } = props;
 
   const currencies = [
     {

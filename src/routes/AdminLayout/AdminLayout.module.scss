@@ -5,7 +5,10 @@
 }
 
 .appBar {
-  z-index: 10;
+  z-index: 100;
+  //background-color: white;
+  //background: linear-gradient(90deg, #03e396 0%, #03e396 100%);
+  background: #1f2532;
   transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms,margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 }
 
@@ -23,6 +26,7 @@
   width: remcalc(300);
   flex-shrink: 0;
   white-space: nowrap;
+  //background-color: #1f2532;
 }
 
 .drawerOpen {
@@ -32,7 +36,7 @@
 
 .drawerClose {
   overflow-x: hidden;
-  width: remcalc(50);
+  width: remcalc(45);
   z-index: 1;
   transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 }

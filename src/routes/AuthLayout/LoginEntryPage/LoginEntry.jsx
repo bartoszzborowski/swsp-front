@@ -46,7 +46,6 @@ class LoginEntry extends React.Component {
     );
   }
 }
-
 const mapStateToProps = state => {
   const { loggingIn = false } = state.authentication || {};
   return { loggingIn };

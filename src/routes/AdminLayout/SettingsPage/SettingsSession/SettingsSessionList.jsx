@@ -5,13 +5,14 @@ import { CardHeader } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import { Form, Formik } from 'formik';
 import MaterialTable from 'material-table';
-import TextFieldCustom from '../components/TextFieldCustom/TextFieldCustom';
+import TextFieldCustom from '../../components/TextFieldCustom/TextFieldCustom';
 import GradientButton from 'components/Button/GradientButton';
 import DoneIcon from '@material-ui/icons/Done';
 import Box from '@material-ui/core/Box';
 
 class SettingsSessionList extends React.Component {
   render() {
+    const initialValues = { session: '' };
     return (
       <div>
         <Grid container spacing={4}>
@@ -20,20 +21,7 @@ class SettingsSessionList extends React.Component {
               <CardHeader title={'Add Session'} />
               <CardContent>
                 <Formik
-                  initialValues={{ email: '', password: '' }}
-                  validate={values => {
-                    const errors = {};
-                    if (!values.email) {
-                      errors.email = 'Required';
-                    } else if (
-                      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                        values.email
-                      )
-                    ) {
-                      errors.email = 'Invalid email address';
-                    }
-                    return errors;
-                  }}
+                  initialValues={initialValues}
                   onSubmit={(values, { setSubmitting }) => {
                     setTimeout(() => {
                       alert(JSON.stringify(values, null, 2));

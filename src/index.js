@@ -14,10 +14,9 @@ import { purple } from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
   // overrides: {
-  //   MuiSvgIcon: {
+  //   MuiPaper: {
   //     root: {
-  //       width: '1rem',
-  //       height: '1rem',
+  //       backgroundColor: '#f0f1f6',
   //     },
   //   },
   // },
