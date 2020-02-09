@@ -82,31 +82,31 @@ class AdminLayout extends React.Component {
           },
         ],
       },
-      {
-        title: 'Products',
-        href: '/products',
-        icon: <ShoppingBasketIcon />,
-      },
-      {
-        title: 'Authentication',
-        href: '/sign-in',
-        icon: <LockOpenIcon />,
-      },
-      {
-        title: 'Typography',
-        href: '/typography',
-        icon: <TextFieldsIcon />,
-      },
-      {
-        title: 'Icons',
-        href: '/icons',
-        icon: <ImageIcon />,
-      },
-      {
-        title: 'Account',
-        href: '/account',
-        icon: <AccountBoxIcon />,
-      },
+      // {
+      //   title: 'Products',
+      //   href: '/products',
+      //   icon: <ShoppingBasketIcon />,
+      // },
+      // {
+      //   title: 'Authentication',
+      //   href: '/sign-in',
+      //   icon: <LockOpenIcon />,
+      // },
+      // {
+      //   title: 'Typography',
+      //   href: '/typography',
+      //   icon: <TextFieldsIcon />,
+      // },
+      // {
+      //   title: 'Icons',
+      //   href: '/icons',
+      //   icon: <ImageIcon />,
+      // },
+      // {
+      //   title: 'Account',
+      //   href: '/account',
+      //   icon: <AccountBoxIcon />,
+      // },
       {
         title: 'Settings',
         href: getLink(SETTINGS_PAGE),
@@ -128,10 +128,6 @@ class AdminLayout extends React.Component {
             title: 'Payment Settings',
             href: getLink(SETTINGS_PAGE_PAYMENT),
           },
-          {
-            title: 'Test',
-            href: '/settings/website',
-          },
         ],
       },
     ];
@@ -146,7 +142,6 @@ class AdminLayout extends React.Component {
         >
           <Toolbar>
             <IconButton
-              color="inherit"
               aria-label="open drawer"
               onClick={this.handleDrawerOpen}
               edge="start"
@@ -168,27 +163,23 @@ class AdminLayout extends React.Component {
                 </Typography>
               </Box>
               <Box>
-                <IconButton aria-label="show 4 new mails" color="inherit">
+                <IconButton aria-label="show 4 new mails">
                   <Badge badgeContent={4} color="secondary">
                     <MailIcon />
                   </Badge>
                 </IconButton>
                 <IconButton
                   aria-label="show 17 new notifications"
-                  color="inherit"
+                  color="primary"
                 >
                   <Badge badgeContent={17} color="secondary">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
-                <IconButton color="inherit">
+                <IconButton color="primary">
                   <AccountCircle />
                 </IconButton>
-                <IconButton
-                  to={getLink(LOGIN_PAGE)}
-                  component={RouterLink}
-                  color="inherit"
-                >
+                <IconButton to={getLink(LOGIN_PAGE)} component={RouterLink}>
                   <InputIcon />
                 </IconButton>
               </Box>
@@ -216,17 +207,17 @@ class AdminLayout extends React.Component {
           </div>
           <Divider />
           <SidebarNav pages={pages} />
-          <Divider />
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
+          {/*<Divider />*/}
+          {/*<List>*/}
+          {/*  {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (*/}
+          {/*    <ListItem button key={text}>*/}
+          {/*      <ListItemIcon>*/}
+          {/*        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}*/}
+          {/*      </ListItemIcon>*/}
+          {/*      <ListItemText primary={text} />*/}
+          {/*    </ListItem>*/}
+          {/*  ))}*/}
+          {/*</List>*/}
         </Drawer>
         <main
           className={clsx(style.content, {
