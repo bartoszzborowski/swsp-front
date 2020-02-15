@@ -11,10 +11,10 @@ const studentService = {
   getAll,
   getById,
   update,
-  delete: _delete,
+  remove,
 };
 
-function getAll() {
+function getAll(perPage = 100, page = 1) {
   const QUERY = gql`
     query($take: Int!, $page: Int!) {
       students(pagination: { take: $take, page: $page }) {
@@ -32,6 +32,7 @@ function getAll() {
             name
           }
           parent {
+            id
             user {
               name
             }
@@ -46,7 +47,7 @@ function getAll() {
   `;
 
   return getClient()
-    .query({ query: QUERY, variables: { take: 10, page: 1 } })
+    .query({ query: QUERY, variables: { take: perPage, page: page } })
     .then(handleResponse)
     .then(result => {
       const {
@@ -75,6 +76,7 @@ function getById(id) {
             name
           }
           parent {
+            id
             user {
               name
             }
@@ -96,7 +98,7 @@ function getById(id) {
         data: { students },
       } = result;
       const { data: studentData = {} } = students;
-      return head(StudentTransform(studentData, students));
+      return head(StudentTransform(studentData, students).data);
     });
 }
 
@@ -117,6 +119,7 @@ function update(student) {
           name
         }
         parent {
+          id
           user {
             name
           }
@@ -141,15 +144,26 @@ function update(student) {
     });
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-  // const requestOptions = {
-  //   method: 'DELETE',
-  //   headers: authHeader(),
-  // };
-  // return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(
-  //   handleResponse
-  // );
+function remove(id) {
+  const MUTATION = gql`
+    mutation($ids: [Int]) {
+      deleteStudents(ids: $ids)
+    }
+  `;
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { ids: [id] },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { deleteStudents },
+      } = result;
+
+      return { id, deleteStudents };
+    });
 }
 
 export default studentService;

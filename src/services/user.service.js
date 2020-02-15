@@ -1,7 +1,13 @@
 import gql from 'graphql-tag';
 import { client, getClient } from 'data/client/apolloClient';
+import { handleResponse } from '../helpers';
+import {
+  transform as userTransform,
+  transformToSave,
+} from 'stores/transformers/userTransformer';
+import head from 'lodash/head';
 
-export const userService = {
+const userService = {
   login,
   logout,
   register,
@@ -41,29 +47,78 @@ function logout() {
   localStorage.removeItem('user');
 }
 
-function getAll() {
+function getAll(perPage = 100, page = 1) {
   const QUERY = gql`
-    query {
-      users {
-        id
-        email
-        token
+    query($take: Int!, $page: Int!) {
+      users(pagination: { take: $take, page: $page }) {
+        data {
+          id
+          email
+          name
+          address
+          phone
+          birthday
+          blood_group
+          gender
+          last_name
+        }
+        per_page
+        last_page
+        current_page
+        total
       }
     }
   `;
 
-  return getClient().query({ query: QUERY });
-  // return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+  return getClient()
+    .query({ query: QUERY, variables: { take: perPage, page: page } })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { users },
+      } = result;
+      const { data: UserData } = users;
+      return userTransform(UserData, users);
+    });
 }
 
 function getById(id) {
-  // const requestOptions = {
-  //   method: 'GET',
-  //   headers: authHeader(),
-  // };
-  // return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(
-  //   handleResponse
-  // );
+  const QUERY = gql`
+    query($take: Int!, $page: Int!, $id: Int) {
+      users(pagination: { take: $take, page: $page }, filters: { id: $id }) {
+        data {
+          id
+          email
+          name
+          address
+          phone
+          birthday
+          blood_group
+          gender
+          last_name
+        }
+        total
+        per_page
+        current_page
+        from
+        to
+        last_page
+        has_more_pages
+      }
+    }
+  `;
+
+  return getClient()
+    .query({ query: QUERY, variables: { take: 10, page: 1, id } })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { users },
+      } = result;
+      const { data: userData = {} } = users;
+
+      return head(userTransform(userData, users).data);
+    });
 }
 
 function register(user) {
@@ -81,10 +136,11 @@ function register(user) {
       }
     }
   `;
+  const serializedUser = transformToSave(user);
   return client
     .mutate({
       mutation: MUTATION,
-      variables: { user },
+      variables: { input: { ...serializedUser } },
     })
     .then(result => {
       const {
@@ -96,14 +152,33 @@ function register(user) {
 }
 
 function update(user) {
-  // const requestOptions = {
-  //   method: 'PUT',
-  //   headers: { ...authHeader(), 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(user),
-  // };
-  // return fetch(`${config.apiUrl}/users/${user.id}`, requestOptions).then(
-  //   handleResponse
-  // );
+  const MUTATION = gql`
+    mutation($input: UpdateUserInputType) {
+      updateUser(input: $input) {
+        id
+        email
+        name
+        address
+        phone
+        birthday
+        blood_group
+        token
+      }
+    }
+  `;
+  const serializedUser = transformToSave(user);
+  return client
+    .mutate({
+      mutation: MUTATION,
+      variables: { input: { ...serializedUser } },
+    })
+    .then(result => {
+      const {
+        data: { updateUser = {} },
+      } = result;
+
+      return updateUser;
+    });
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
@@ -116,3 +191,5 @@ function _delete(id) {
   //   handleResponse
   // );
 }
+
+export default userService;

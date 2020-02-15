@@ -1,17 +1,21 @@
 export const resourceName = {
   student: 'student',
   classes: 'classes',
-  kwej: 'test',
+  parents: 'parents',
+  session: 'session',
 };
 
 export default [
   {
-    name: resourceName.kwej,
+    name: resourceName.parents,
   },
   {
     name: resourceName.classes,
   },
   {
     name: resourceName.student,
+  },
+  {
+    name: resourceName.session,
   },
 ];

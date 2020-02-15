@@ -1,24 +1,24 @@
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import React from 'react';
+import MenuItem from '@material-ui/core/MenuItem';
 
-const TextFieldCustom = props => {
+const TextFieldSelectCustom = props => {
   const {
     name,
     label,
     variant = null,
     props: InputProps,
     full = true,
-    password = false,
+    children,
     ...rest
   } = props;
   const { handleChange, handleBlur, errors, touched, values } = InputProps;
-  console.log('values', values);
   return (
     <TextField
       {...rest}
-      type={password ? 'password' : 'text'}
       style={{ marginLeft: '6px', marginRight: '6px' }}
+      select
       error={errors[name] && touched[name]}
       variant={variant ? variant : 'outlined'}
       margin="normal"
@@ -31,17 +31,28 @@ const TextFieldCustom = props => {
       onChange={handleChange}
       onBlur={handleBlur}
       helperText={errors[name] && touched[name] && errors[name]}
-    />
+    >
+      {children.map(option => (
+        <MenuItem key={option.value} value={option.value}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </TextField>
   );
 };
 
-TextFieldCustom.propTypes = {
+TextFieldSelectCustom.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   variant: PropTypes.string,
   props: PropTypes.any.isRequired,
   full: PropTypes.bool,
-  password: PropTypes.bool,
+  children: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.any.isRequired,
+    })
+  ),
 };
 
-export default TextFieldCustom;
+export default TextFieldSelectCustom;

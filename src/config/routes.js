@@ -6,19 +6,28 @@ import { AuthLayout } from 'routes/AuthLayout';
 import { HomePage } from 'routes/AdminLayout/HomePage';
 import { LoginPage } from 'routes/AuthLayout/LoginEntryPage';
 import { RegisterPage } from 'routes/AuthLayout/RegisterPage';
-import { SettingPayment } from '/routes/AdminLayout/SettingsPage';
-import { SettingsEmail } from 'routes/AdminLayout/SettingsPage';
-import { SettingsGeneralPage } from 'routes/AdminLayout/SettingsPage';
-import { SettingsPage } from 'routes/AdminLayout/SettingsPage';
-import { SettingsSessionList } from 'routes/AdminLayout/SettingsPage';
-import { UsersPage } from 'routes/AdminLayout/UsersPage';
-import { StudentDetails } from 'routes/AdminLayout/StudentInfoPage';
-import { StudentEdit } from 'routes/AdminLayout/StudentInfoPage';
-import { StudentList } from 'routes/AdminLayout/StudentInfoPage';
+import {
+  SettingPayment,
+  SettingsEmail,
+  SettingsGeneralPage,
+  SettingsPage,
+  SettingsSessionList,
+} from '/routes/AdminLayout/SettingsPage';
+import {
+  UserEdit,
+  UsersPage,
+  UsersList,
+  UserCreate,
+} from 'routes/AdminLayout/UsersPage';
+import {
+  StudentDetails,
+  StudentEdit,
+  StudentCreate,
+  StudentList,
+} from 'routes/AdminLayout/StudentInfoPage';
 
 export const LOGIN_PAGE = 'login_page';
 export const REGISTER_PAGE = 'register_page';
-export const USERS_PAGE = 'users_page';
 export const HOME_PAGE = 'home_page';
 
 export const SETTINGS_PAGE = 'settings_page';
@@ -31,6 +40,12 @@ export const STUDENT_INFO_PAGE = 'student_info_page';
 export const STUDENT_INFO_DETAILS_PAGE = 'student_info_details_page';
 export const STUDENT_INFO_LIST_PAGE = 'student_info_list_page';
 export const STUDENT_INFO_EDIT_PAGE = 'student_info_edit_page';
+export const STUDENT_INFO_CREATE_PAGE = 'student_info_create_page';
+
+export const USERS_PAGE = 'users_page';
+export const USER_INFO_LIST_PAGE = 'user_info_list_page';
+export const USER_INFO_CREATE_PAGE = 'user_info_create_page';
+export const USER_INFO_EDIT_PAGE = 'user_info_edit_page';
 
 export const getLink = name => {
   const route = head(Routes.filter(x => x.slug === name));
@@ -39,7 +54,7 @@ export const getLink = name => {
 
 export const redirectTo = (name, parameters = []) => {
   const tempLink = getLink(name);
-  let link = null;
+  let link = tempLink;
   parameters.map(param => {
     const paramKey = head(Object.keys(param));
     link = tempLink.replace(`:${paramKey}`, param[paramKey]);
@@ -78,9 +93,33 @@ export const Routes = [
   {
     slug: USERS_PAGE,
     private: true,
-    exact: false,
+    exact: true,
     path: '/users',
     component: UsersPage,
+    layout: AdminLayout,
+  },
+  {
+    slug: USER_INFO_LIST_PAGE,
+    private: true,
+    exact: false,
+    path: '/users/list',
+    component: UsersList,
+    layout: AdminLayout,
+  },
+  {
+    slug: USER_INFO_CREATE_PAGE,
+    private: true,
+    exact: false,
+    path: '/users/create',
+    component: UserCreate,
+    layout: AdminLayout,
+  },
+  {
+    slug: USER_INFO_EDIT_PAGE,
+    private: true,
+    exact: false,
+    path: '/users/edit/:userId',
+    component: UserEdit,
     layout: AdminLayout,
   },
   {
@@ -97,6 +136,14 @@ export const Routes = [
     exact: false,
     path: '/students/list',
     component: StudentList,
+    layout: AdminLayout,
+  },
+  {
+    slug: STUDENT_INFO_CREATE_PAGE,
+    private: true,
+    exact: false,
+    path: '/students/create',
+    component: StudentCreate,
     layout: AdminLayout,
   },
   {

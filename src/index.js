@@ -6,11 +6,13 @@ import { Provider } from 'react-redux';
 import { store } from 'stores';
 import 'typeface-roboto';
 import { StylesProvider } from '@material-ui/core/styles';
-
+import { SnackbarProvider } from 'notistack';
 import * as serviceWorker from './serviceWorker';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { ThemeProvider } from '@material-ui/styles';
 import { purple } from '@material-ui/core/colors';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 const theme = createMuiTheme({
   // overrides: {
@@ -26,7 +28,11 @@ ReactDOM.render(
   <ThemeProvider theme={theme}>
     <Provider store={store}>
       <StylesProvider injectFirst>
-        <App />
+        <SnackbarProvider>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <App />
+          </MuiPickersUtilsProvider>
+        </SnackbarProvider>
       </StylesProvider>
     </Provider>
   </ThemeProvider>,

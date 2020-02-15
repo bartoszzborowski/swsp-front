@@ -4,9 +4,6 @@ import clsx from 'clsx';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import React from 'react';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -15,20 +12,13 @@ import { Link as RouterLink } from 'react-router-dom';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Badge from '@material-ui/core/Badge';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import InboxIcon from '@material-ui/icons/MoveToInboxOutlined';
 import InputIcon from '@material-ui/icons/Input';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
-import TextFieldsIcon from '@material-ui/icons/TextFields';
-import ImageIcon from '@material-ui/icons/Image';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 import style from './AdminLayout.module.scss';
 import {
@@ -41,8 +31,12 @@ import {
   SETTINGS_PAGE_SESSION,
   STUDENT_INFO_LIST_PAGE,
   STUDENT_INFO_PAGE,
+  USER_INFO_CREATE_PAGE,
+  USER_INFO_LIST_PAGE,
+  USERS_PAGE,
 } from 'config/routes';
 import SidebarNav from './components/SidebarNav/SidebarNav';
+import Notifier from 'helpers/notifier';
 
 class AdminLayout extends React.Component {
   constructor(props) {
@@ -70,6 +64,21 @@ class AdminLayout extends React.Component {
         title: 'Dashboard',
         href: '/dashboard',
         icon: <DashboardIcon />,
+      },
+      {
+        title: 'Users',
+        href: getLink(USERS_PAGE),
+        icon: <PeopleIcon />,
+        nested: [
+          {
+            title: 'User List',
+            href: getLink(USER_INFO_LIST_PAGE),
+          },
+          {
+            title: 'User Create',
+            href: getLink(USER_INFO_CREATE_PAGE),
+          },
+        ],
       },
       {
         title: 'Student info',
@@ -134,6 +143,7 @@ class AdminLayout extends React.Component {
     const { open } = this.state;
     return (
       <>
+        <Notifier />
         <AppBar
           position="fixed"
           className={clsx(style.appBar, {
@@ -159,7 +169,7 @@ class AdminLayout extends React.Component {
             >
               <Box flexGrow={1}>
                 <Typography variant="h6" noWrap>
-                  Mini variant drawer
+                  Swsp
                 </Typography>
               </Box>
               <Box>

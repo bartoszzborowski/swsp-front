@@ -20,8 +20,6 @@ export const Form = props => {
     isValid,
   } = props;
 
-  console.log(getLink(REGISTER_PAGE));
-
   return (
     <form noValidate onSubmit={handleSubmit}>
       <TextField

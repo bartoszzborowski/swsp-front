@@ -40,7 +40,7 @@ export const getClient = token => {
 
   const config = {
     link,
-    cache: new InMemoryCache({ addTypename: false }),
+    cache: new InMemoryCache({ addTypename: true }),
     defaultOptions,
   };
 

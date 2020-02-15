@@ -9,28 +9,57 @@ import TextFieldCustom from '../../components/TextFieldCustom/TextFieldCustom';
 import GradientButton from 'components/Button/GradientButton';
 import DoneIcon from '@material-ui/icons/Done';
 import Box from '@material-ui/core/Box';
+import { getValue } from 'helpers';
+import * as Yup from 'yup';
+import { getList, create, remove, update } from 'stores/actions';
+import { resourceName } from 'stores/resources';
+import { connect } from 'react-redux';
+import Input from '@material-ui/core/Input';
+import MaskedInput from 'react-text-mask';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 class SettingsSessionList extends React.Component {
+  componentDidMount() {
+    const { getListSession } = this.props;
+    getListSession();
+  }
+
   render() {
+    const {
+      sessions,
+      isLoading,
+      createSession,
+      getListSession,
+      deleteSession,
+      updateSession,
+    } = this.props;
     const initialValues = { session: '' };
+    const columns = [
+      { title: 'Id', field: 'id', editable: 'never' },
+      { title: 'Session', field: 'name' },
+    ];
+
     return (
       <div>
         <Grid container spacing={4}>
           <Grid item lg={4} md={6} xl={4} xs={12}>
             <Card>
-              <CardHeader title={'Add Session'} />
+              <CardHeader title={'Dodaj sesję'} />
               <CardContent>
                 <Formik
                   initialValues={initialValues}
-                  onSubmit={(values, { setSubmitting }) => {
-                    setTimeout(() => {
-                      alert(JSON.stringify(values, null, 2));
+                  onSubmit={(values, { setSubmitting, resetForm }) => {
+                    createSession(values).then(item => {
+                      getListSession();
                       setSubmitting(false);
-                    }, 400);
+                      resetForm();
+                    });
                   }}
                 >
                   {props => (
                     <Form>
+                      <MaskedSessionInput />
                       <TextFieldCustom
                         name={'session'}
                         label={'Session'}
@@ -48,7 +77,7 @@ class SettingsSessionList extends React.Component {
                               variant="contained"
                               color="primary"
                             >
-                              Save Session
+                              Zapisz
                             </GradientButton>
                           </Box>
                         </Grid>
@@ -62,47 +91,31 @@ class SettingsSessionList extends React.Component {
           <Grid item lg={8} md={6} xl={8} xs={12}>
             <Card>
               <MaterialTable
-                title="Session list"
-                columns={[
-                  { title: 'Id', field: 'id', editable: 'never' },
-                  { title: 'Session', field: 'session' },
-                ]}
+                title="Lista sesji"
+                columns={columns}
+                isLoading={isLoading}
                 editable={{
                   onRowUpdate: (newData, oldData) =>
                     new Promise((resolve, reject) => {
-                      console.log('newData', newData);
-                      console.log('oldData', oldData);
-                      resolve({
-                        data: newData,
-                      });
+                      updateSession(newData).then(
+                        () => {
+                          resolve({
+                            data: newData,
+                          });
+                        },
+                        () => {
+                          reject();
+                        }
+                      );
                     }),
                   onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        {
-                          /* let data = this.state.data;
-                            const index = data.indexOf(oldData);
-                            data.splice(index, 1);
-                            this.setState({ data }, () => resolve()); */
-                        }
+                      deleteSession(oldData.id).then(() => {
                         resolve();
-                      }, 1000);
+                      });
                     }),
                 }}
-                data={[
-                  {
-                    id: 1,
-                    session: '2019-2020',
-                  },
-                  {
-                    id: 2,
-                    session: '2018-2019',
-                  },
-                  {
-                    id: 3,
-                    session: '2017-2018',
-                  },
-                ]}
+                data={sessions}
                 actions={[
                   {
                     icon: 'save',
@@ -123,4 +136,86 @@ class SettingsSessionList extends React.Component {
     );
   }
 }
-export { SettingsSessionList };
+
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+  const mask = [
+    '(',
+    /[1-9]/,
+    /\d/,
+    /\d/,
+    ')',
+    ' ',
+    /\d/,
+    /\d/,
+    /\d/,
+    '-',
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+  ];
+  return (
+    <MaskedInput
+      {...other}
+      ref={ref => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      mask={mask}
+      placeholderChar={'\u2000'}
+      showMask
+    />
+  );
+}
+
+const MaskedSessionInput = () => {
+  const [values, setValues] = React.useState({
+    textmask: '(1  )    -    ',
+  });
+
+  const handleChange = name => event => {
+    setValues({
+      ...values,
+      [name]: event.target.value,
+    });
+  };
+
+  return (
+    <FormControl>
+      <InputLabel htmlFor="formatted-text-mask-input">
+        react-text-mask
+      </InputLabel>
+      <Input
+        value={values.textmask}
+        onChange={handleChange('textmask')}
+        id="formatted-text-mask-input"
+        inputComponent={TextMaskCustom}
+        variant={'outlined'}
+        fullWidth
+      />
+    </FormControl>
+  );
+};
+
+const mapStateToProps = state => {
+  const { items = [], loading } = state.session;
+
+  return {
+    sessions: getValue(items, []),
+    isLoading: loading,
+  };
+};
+
+const actionCreators = {
+  getListSession: getList(resourceName.session),
+  createSession: create(resourceName.session),
+  deleteSession: remove(resourceName.session),
+  updateSession: update(resourceName.session),
+};
+
+const connectedStudentPage = connect(
+  mapStateToProps,
+  actionCreators
+)(SettingsSessionList);
+
+export { connectedStudentPage as SettingsSessionList };

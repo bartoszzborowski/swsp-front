@@ -2,26 +2,26 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import MaterialTable from 'material-table';
-import AsyncSelect from 'react-select/async';
 import {
   redirectTo,
   STUDENT_INFO_CREATE_PAGE,
   STUDENT_INFO_DETAILS_PAGE,
+  USER_INFO_CREATE_PAGE,
+  USER_INFO_EDIT_PAGE,
 } from 'config/routes';
-import * as Yup from 'yup';
+
 import { getList, update, remove } from 'stores/actions';
 import { connect } from 'react-redux';
 import { resourceName } from 'stores/resources';
 import { getValue } from 'helpers';
-import studentService from 'services/student.service';
-import searchService from 'services/search.service';
+import userService from 'services/user.service';
 
-class StudentList extends React.Component {
+class UsersList extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      students: [],
+      users: [],
     };
   }
 
@@ -29,54 +29,19 @@ class StudentList extends React.Component {
     const { isLoading, classes, updateStudent, deleteStudent } = this.props;
     const { students } = this.state;
 
-    const classesLookup =
-      classes &&
-      classes.reduce((obj, item) => ((obj[item.id] = item.name), obj), {});
-
-    const parentsLookup =
-      students &&
-      students.reduce(
-        (obj, item) => ((obj[item.parentId] = item.parentName), obj),
-        {}
-      );
-
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
       { title: 'Imię', field: 'name' },
-      {
-        title: 'Klasa',
-        field: 'classId',
-        lookup: classesLookup,
-      },
-      {
-        title: 'Rodzic',
-        field: 'parentId',
-        lookup: parentsLookup,
-        editComponent: props => (
-          <AsyncSelect
-            onChange={result => props.onChange(result.value)}
-            cacheOptions
-            loadOptions={promiseOptions}
-            defaultOptions={props.value}
-          />
-        ),
-      },
-      { title: 'Data urodzin', field: 'birthDay' },
+      { title: 'Email', field: 'email' },
+      { title: 'Adres', field: 'address' },
+      { title: 'Telefon', field: 'phone' },
+      { title: 'Data urodzin', field: 'birthday' },
       {
         title: 'Płeć',
         field: 'gender',
         lookup: { 1: 'Mężczyzna', 2: 'Kobieta' },
       },
-      { title: 'Telefon', field: 'phone' },
-      { title: 'Sesja', field: 'session' },
     ];
-
-    const promiseOptions = inputValue =>
-      new Promise(resolve => {
-        searchService.search(inputValue, 'parents').then(result => {
-          resolve(result);
-        });
-      });
 
     return (
       <div>
@@ -84,7 +49,7 @@ class StudentList extends React.Component {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Card>
               <MaterialTable
-                title="Lista studentów"
+                title="Lista użytkowników"
                 columns={columns}
                 isLoading={isLoading}
                 editable={{
@@ -114,13 +79,13 @@ class StudentList extends React.Component {
                 }}
                 data={query =>
                   new Promise((resolve, reject) => {
-                    studentService
-                      .getAll(query.pageSize, query.page)
+                    userService
+                      .getAll(query.pageSize, query.page + 1)
                       .then(result => {
-                        this.setState({ students: result.data });
+                        this.setState({ users: result.data });
                         resolve({
                           data: result.data,
-                          page: result.page,
+                          page: result.page - 1,
                           totalCount: result.total,
                         });
                       });
@@ -129,17 +94,15 @@ class StudentList extends React.Component {
                 actions={[
                   {
                     icon: 'account_circle',
-                    tooltip: 'View User',
+                    tooltip: 'Edytuj użytkownika',
                     onClick: (event, rowData) =>
-                      redirectTo(STUDENT_INFO_DETAILS_PAGE, [
-                        { studentId: rowData.id },
-                      ]),
+                      redirectTo(USER_INFO_EDIT_PAGE, [{ userId: rowData.id }]),
                   },
                   {
                     icon: 'add',
-                    tooltip: 'Dodaj studenta',
+                    tooltip: 'Dodaj użytkownika',
                     isFreeAction: true,
-                    onClick: event => redirectTo(STUDENT_INFO_CREATE_PAGE),
+                    onClick: event => redirectTo(USER_INFO_CREATE_PAGE),
                   },
                 ]}
                 options={{
@@ -152,21 +115,32 @@ class StudentList extends React.Component {
             </Card>
           </Grid>
         </Grid>
-        <AsyncSelect cacheOptions loadOptions={promiseOptions} defaultOptions />
       </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  return {};
+  const { items = [], loading } = state.student;
+  const { items: classesItems = [] } = state.classes;
+  const { items: parentsItems = [] } = state.parents;
+
+  return {
+    students: getValue(items, []),
+    classes: getValue(classesItems, []),
+    parents: getValue(parentsItems, []),
+    isLoading: loading,
+  };
 };
 
-const actionCreators = {};
+const actionCreators = {
+  getListParents: getList(resourceName.parents),
+  getListClasses: getList(resourceName.classes),
+  getListStudent: getList(resourceName.student),
+  updateStudent: update(resourceName.student),
+  deleteStudent: remove(resourceName.student),
+};
 
-const connectedStudentPage = connect(
-  mapStateToProps,
-  actionCreators
-)(StudentList);
+const connectedUsersPage = connect(mapStateToProps, actionCreators)(UsersList);
 
-export { connectedStudentPage as StudentList };
+export { connectedUsersPage as UsersList };

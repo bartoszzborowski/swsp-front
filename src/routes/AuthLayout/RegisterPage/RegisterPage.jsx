@@ -15,10 +15,13 @@ class RegisterPage extends React.Component {
     super(props);
   }
 
-  handleSubmit = data => {
+  handleSubmit = (data, { setSubmitting, resetForm }) => {
     const { name, email, password } = data;
     if (name && email && password) {
-      this.props.register(data);
+      this.props.register(data, true).then(item => {
+        setSubmitting(false);
+        resetForm();
+      });
     }
   };
 

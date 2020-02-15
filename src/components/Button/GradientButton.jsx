@@ -18,6 +18,7 @@ const StyledButton = styled(Button)`
   padding: 0 30px;
   box-shadow: 0 3px 5px 2px rgba(255, 105, 135, 0.3);
   transition: all 0.4s ease 0s;
+  margin-top: 20px;
 `;
 
 export default function GradientButton(props) {
