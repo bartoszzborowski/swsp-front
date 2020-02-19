@@ -26,21 +26,33 @@ function search(query, index) {
       }
     `,
   };
+  let QUERY = '';
 
-  const QUERY = gql`
-    query($page: Int!, $take: Int!, $filters: FiltersElasticSearchInputType) {
-      search(filters: $filters, pagination: { page: $page, take: $take }) {
-        ... on StudentType {
-          ...StudentInfo
-        }
-        ... on ParentType {
-          ...ParentInfo
+  if (index === 'parents') {
+    QUERY = gql`
+      query($page: Int!, $take: Int!, $filters: FiltersElasticSearchInputType) {
+        search(filters: $filters, pagination: { page: $page, take: $take }) {
+          ... on ParentType {
+            ...ParentInfo
+          }
         }
       }
-    }
-    ${fragments.student}
-    ${fragments.parent}
-  `;
+      ${fragments.parent}
+    `;
+  }
+
+  if (index === 'students') {
+    QUERY = gql`
+      query($page: Int!, $take: Int!, $filters: FiltersElasticSearchInputType) {
+        search(filters: $filters, pagination: { page: $page, take: $take }) {
+          ... on StudentType {
+            ...StudentInfo
+          }
+        }
+      }
+      ${fragments.student}
+    `;
+  }
 
   const filters = { filters: { index, query } };
   return getClient()

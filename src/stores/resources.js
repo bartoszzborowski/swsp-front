@@ -3,6 +3,7 @@ export const resourceName = {
   classes: 'classes',
   parents: 'parents',
   session: 'session',
+  subject: 'subject',
 };
 
 export default [
@@ -17,5 +18,8 @@ export default [
   },
   {
     name: resourceName.session,
+  },
+  {
+    name: resourceName.subject,
   },
 ];

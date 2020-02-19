@@ -21,9 +21,10 @@ const DatePickerCustom = props => {
       disableFuture={disableFuture}
       style={{ marginLeft: '6px', marginRight: '6px' }}
       error={errors[name] && touched[name]}
-      margin="normal"
+      margin="none"
       label={label}
       format="MM/dd/yyyy"
+      size="small"
       value={values[name]}
       onChange={onDateChange(setFieldValue, name)}
       inputVariant={variant ? variant : 'outlined'}

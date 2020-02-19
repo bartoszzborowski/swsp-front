@@ -12,6 +12,68 @@ const studentService = {
   getById,
   update,
   remove,
+  getByCustomFilters,
+};
+
+const fragments = {
+  user: gql`
+    fragment UserInfo on StudentType {
+      user {
+        id
+        email
+        name
+        last_name
+        address
+        phone
+        birthday
+        blood_group
+        gender
+        token
+      }
+    }
+  `,
+  classes: gql`
+    fragment ClassesInfo on StudentType {
+      classes {
+        id
+        name
+      }
+    }
+  `,
+  session: gql`
+    fragment SessionInfo on StudentType {
+      session {
+        id
+        name
+        status
+        school_id
+      }
+    }
+  `,
+  parent: gql`
+    fragment ParentInfo on StudentType {
+      parent {
+        id
+        ...ParentInfoUser
+      }
+    }
+  `,
+  userParent: gql`
+    fragment ParentInfoUser on ParentType {
+      user {
+        id
+        email
+        name
+        last_name
+        address
+        phone
+        birthday
+        blood_group
+        gender
+        token
+      }
+    }
+  `,
 };
 
 function getAll(perPage = 100, page = 1) {
@@ -20,23 +82,10 @@ function getAll(perPage = 100, page = 1) {
       students(pagination: { take: $take, page: $page }) {
         data {
           id
-          user {
-            name
-            email
-            birthday
-            phone
-            gender
-          }
-          classes {
-            id
-            name
-          }
-          parent {
-            id
-            user {
-              name
-            }
-          }
+          ...UserInfo
+          ...ParentInfo
+          ...ClassesInfo
+          ...SessionInfo
         }
         per_page
         last_page
@@ -44,6 +93,11 @@ function getAll(perPage = 100, page = 1) {
         total
       }
     }
+    ${fragments.user}
+    ${fragments.parent}
+    ${fragments.classes}
+    ${fragments.session}
+    ${fragments.userParent}
   `;
 
   return getClient()
@@ -64,23 +118,10 @@ function getById(id) {
       students(pagination: { take: $take, page: $page }, filters: { id: $id }) {
         data {
           id
-          user {
-            name
-            email
-            birthday
-            phone
-            gender
-          }
-          classes {
-            id
-            name
-          }
-          parent {
-            id
-            user {
-              name
-            }
-          }
+          ...UserInfo
+          ...ParentInfo
+          ...ClassesInfo
+          ...SessionInfo
         }
         per_page
         last_page
@@ -88,6 +129,11 @@ function getById(id) {
         total
       }
     }
+    ${fragments.user}
+    ${fragments.parent}
+    ${fragments.classes}
+    ${fragments.session}
+    ${fragments.userParent}
   `;
 
   return getClient()
@@ -102,30 +148,58 @@ function getById(id) {
     });
 }
 
+function getByCustomFilters(customFilters = {}, take = 100, page = 1) {
+  const QUERY = gql`
+    query($take: Int!, $page: Int!, $filters: FiltersStudentInputType) {
+      students(pagination: { take: $take, page: $page }, filters: $filters) {
+        data {
+          id
+          ...UserInfo
+          ...ParentInfo
+          ...ClassesInfo
+          ...SessionInfo
+        }
+        per_page
+        last_page
+        current_page
+        total
+      }
+    }
+    ${fragments.user}
+    ${fragments.parent}
+    ${fragments.classes}
+    ${fragments.session}
+    ${fragments.userParent}
+  `;
+
+  return getClient()
+    .query({ query: QUERY, variables: { take, page, filters: customFilters } })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { students },
+      } = result;
+      const { data: studentData = {} } = students;
+      return StudentTransform(studentData, students);
+    });
+}
+
 function update(student) {
   const MUTATION = gql`
     mutation($input: UpdateStudentInputType) {
       updateStudent(input: $input) {
         id
-        user {
-          name
-          email
-          birthday
-          phone
-          gender
-        }
-        classes {
-          id
-          name
-        }
-        parent {
-          id
-          user {
-            name
-          }
-        }
+        ...UserInfo
+        ...ParentInfo
+        ...ClassesInfo
+        ...SessionInfo
       }
     }
+    ${fragments.user}
+    ${fragments.parent}
+    ${fragments.classes}
+    ${fragments.session}
+    ${fragments.userParent}
   `;
   const sanitizeStudent = transformToUpdate(student);
 

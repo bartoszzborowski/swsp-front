@@ -25,7 +25,7 @@ function getAll() {
   `;
 
   return getClient()
-    .query({ query: QUERY, variables: { take: 100, page: 1 } })
+    .query({ query: QUERY, variables: { take: 500, page: 1 } })
     .then(handleResponse)
     .then(result => {
       const {

@@ -29,6 +29,7 @@ import {
   SETTINGS_PAGE_MAIL,
   SETTINGS_PAGE_PAYMENT,
   SETTINGS_PAGE_SESSION,
+  STUDENT_ATTENDANCE,
   STUDENT_INFO_LIST_PAGE,
   STUDENT_INFO_PAGE,
   USER_INFO_CREATE_PAGE,
@@ -88,6 +89,10 @@ class AdminLayout extends React.Component {
           {
             title: 'Student list',
             href: getLink(STUDENT_INFO_LIST_PAGE),
+          },
+          {
+            title: 'Dziennik obecności',
+            href: getLink(STUDENT_ATTENDANCE),
           },
         ],
       },

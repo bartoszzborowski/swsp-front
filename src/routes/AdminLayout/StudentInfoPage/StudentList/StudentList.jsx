@@ -3,13 +3,13 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import MaterialTable from 'material-table';
 import AsyncSelect from 'react-select/async';
+import { DatePicker } from '@material-ui/pickers';
 import {
   redirectTo,
   STUDENT_INFO_CREATE_PAGE,
   STUDENT_INFO_DETAILS_PAGE,
 } from 'config/routes';
-import * as Yup from 'yup';
-import { getList, update, remove } from 'stores/actions';
+import { getList, update } from 'stores/actions';
 import { connect } from 'react-redux';
 import { resourceName } from 'stores/resources';
 import { getValue } from 'helpers';
@@ -25,13 +25,29 @@ class StudentList extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { getListClasses, getListSession } = this.props;
+    getListClasses();
+    getListSession();
+  }
+
   render() {
-    const { isLoading, classes, updateStudent, deleteStudent } = this.props;
+    const {
+      isLoading,
+      classes,
+      updateStudent,
+      deleteStudent,
+      sessions,
+    } = this.props;
     const { students } = this.state;
 
     const classesLookup =
       classes &&
       classes.reduce((obj, item) => ((obj[item.id] = item.name), obj), {});
+
+    const sessionsLookup =
+      sessions &&
+      sessions.reduce((obj, item) => ((obj[item.id] = item.name), obj), {});
 
     const parentsLookup =
       students &&
@@ -57,18 +73,31 @@ class StudentList extends React.Component {
             onChange={result => props.onChange(result.value)}
             cacheOptions
             loadOptions={promiseOptions}
-            defaultOptions={props.value}
+            defaultOptions="true"
           />
         ),
       },
-      { title: 'Data urodzin', field: 'birthDay' },
+      {
+        title: 'Data urodzin',
+        field: 'birthday',
+        editComponent: props => (
+          <DatePicker
+            format="MM/dd/yyyy"
+            variant="inline"
+            disableFuture
+            margin="normal"
+            value={props.value}
+            onChange={result => props.onChange(result)}
+          />
+        ),
+      },
       {
         title: 'Płeć',
         field: 'gender',
         lookup: { 1: 'Mężczyzna', 2: 'Kobieta' },
       },
       { title: 'Telefon', field: 'phone' },
-      { title: 'Sesja', field: 'session' },
+      { title: 'Sesja', field: 'sessionId', lookup: sessionsLookup },
     ];
 
     const promiseOptions = inputValue =>
@@ -109,6 +138,7 @@ class StudentList extends React.Component {
                         })
                         .catch(error => {
                           console.log('error', error);
+                          reject();
                         });
                     }),
                 }}
@@ -159,10 +189,24 @@ class StudentList extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {};
+  const { items = [], loading } = state.student;
+  const { items: classesItems = [] } = state.classes;
+  const { items: sessionItems = [] } = state.session;
+
+  return {
+    students: getValue(items, []),
+    isLoading: loading,
+    classes: getValue(classesItems),
+    sessions: getValue(sessionItems),
+  };
 };
 
-const actionCreators = {};
+const actionCreators = {
+  getListStudent: getList(resourceName.student),
+  getListClasses: getList(resourceName.classes),
+  getListSession: getList(resourceName.session),
+  updateStudent: update(resourceName.student),
+};
 
 const connectedStudentPage = connect(
   mapStateToProps,

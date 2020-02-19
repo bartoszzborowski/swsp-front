@@ -10,7 +10,6 @@ import { SnackbarProvider } from 'notistack';
 import * as serviceWorker from './serviceWorker';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { ThemeProvider } from '@material-ui/styles';
-import { purple } from '@material-ui/core/colors';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 

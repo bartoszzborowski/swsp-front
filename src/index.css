@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+
+.fixedTable {
+  padding: 30px;
+}
+
+.fixedTable > .MuiPaper-root {
+  max-height: 500px;
+  overflow: auto;
+}

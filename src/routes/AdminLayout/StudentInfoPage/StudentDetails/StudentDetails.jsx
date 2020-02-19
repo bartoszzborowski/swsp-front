@@ -14,6 +14,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
+import GradientButton from 'components/Button/GradientButton';
+import EditIcon from '@material-ui/icons/Edit';
+import Box from '@material-ui/core/Box';
+import { redirectTo, STUDENT_INFO_EDIT_PAGE } from '../../../../config/routes';
 
 class StudentDetails extends React.Component {
   componentDidMount() {
@@ -67,6 +71,21 @@ class StudentDetails extends React.Component {
                         ))}
                       </TableBody>
                     </Table>
+                    <Box textAlign={'center'} style={{ marginTop: '20px' }}>
+                      <GradientButton
+                        startIcon={<EditIcon />}
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        onClick={() =>
+                          redirectTo(STUDENT_INFO_EDIT_PAGE, [
+                            { studentId: student.id },
+                          ])
+                        }
+                      >
+                        Edytuj
+                      </GradientButton>
+                    </Box>
                   </div>
                   <div>div2</div>
                   <div>div3</div>

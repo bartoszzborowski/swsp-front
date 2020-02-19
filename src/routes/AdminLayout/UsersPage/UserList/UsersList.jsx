@@ -53,15 +53,6 @@ class UsersList extends React.Component {
                 columns={columns}
                 isLoading={isLoading}
                 editable={{
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve, reject) => {
-                      updateStudent(newData).then(item => {
-                        const data = this.state.students;
-                        const index = data.indexOf(oldData);
-                        data[index] = newData;
-                        this.setState({ students: data }, () => resolve());
-                      });
-                    }),
                   onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
                       deleteStudent(oldData.id)
@@ -79,6 +70,7 @@ class UsersList extends React.Component {
                 }}
                 data={query =>
                   new Promise((resolve, reject) => {
+                    console.log('query', query);
                     userService
                       .getAll(query.pageSize, query.page + 1)
                       .then(result => {
@@ -93,19 +85,14 @@ class UsersList extends React.Component {
                 }
                 actions={[
                   {
-                    icon: 'account_circle',
+                    icon: 'edit',
                     tooltip: 'Edytuj użytkownika',
                     onClick: (event, rowData) =>
                       redirectTo(USER_INFO_EDIT_PAGE, [{ userId: rowData.id }]),
                   },
-                  {
-                    icon: 'add',
-                    tooltip: 'Dodaj użytkownika',
-                    isFreeAction: true,
-                    onClick: event => redirectTo(USER_INFO_CREATE_PAGE),
-                  },
                 ]}
                 options={{
+                  search: true,
                   actionsColumnIndex: columns.length,
                   exportButton: true,
                   pageSize: 50,

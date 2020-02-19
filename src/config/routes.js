@@ -24,6 +24,7 @@ import {
   StudentEdit,
   StudentCreate,
   StudentList,
+  StudentAttendance,
 } from 'routes/AdminLayout/StudentInfoPage';
 
 export const LOGIN_PAGE = 'login_page';
@@ -41,6 +42,8 @@ export const STUDENT_INFO_DETAILS_PAGE = 'student_info_details_page';
 export const STUDENT_INFO_LIST_PAGE = 'student_info_list_page';
 export const STUDENT_INFO_EDIT_PAGE = 'student_info_edit_page';
 export const STUDENT_INFO_CREATE_PAGE = 'student_info_create_page';
+
+export const STUDENT_ATTENDANCE = 'student_attendance';
 
 export const USERS_PAGE = 'users_page';
 export const USER_INFO_LIST_PAGE = 'user_info_list_page';
@@ -150,8 +153,16 @@ export const Routes = [
     slug: STUDENT_INFO_EDIT_PAGE,
     private: true,
     exact: false,
-    path: '/students/edit',
+    path: '/students/edit/:studentId',
     component: StudentEdit,
+    layout: AdminLayout,
+  },
+  {
+    slug: STUDENT_ATTENDANCE,
+    private: true,
+    exact: true,
+    path: '/student-attendance',
+    component: StudentAttendance,
     layout: AdminLayout,
   },
   {
