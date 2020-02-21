@@ -58,6 +58,14 @@ const fragments = {
       }
     }
   `,
+  subject: gql`
+    fragment SubjectInfo on StudentType {
+      subject {
+        id
+        name
+      }
+    }
+  `,
   userParent: gql`
     fragment ParentInfoUser on ParentType {
       user {
@@ -86,6 +94,7 @@ function getAll(perPage = 100, page = 1) {
           ...ParentInfo
           ...ClassesInfo
           ...SessionInfo
+          ...SubjectInfo
         }
         per_page
         last_page
@@ -98,6 +107,7 @@ function getAll(perPage = 100, page = 1) {
     ${fragments.classes}
     ${fragments.session}
     ${fragments.userParent}
+    ${fragments.subject}
   `;
 
   return getClient()
@@ -122,6 +132,7 @@ function getById(id) {
           ...ParentInfo
           ...ClassesInfo
           ...SessionInfo
+          ...SubjectInfo
         }
         per_page
         last_page
@@ -134,6 +145,7 @@ function getById(id) {
     ${fragments.classes}
     ${fragments.session}
     ${fragments.userParent}
+    ${fragments.subject}
   `;
 
   return getClient()
@@ -144,6 +156,7 @@ function getById(id) {
         data: { students },
       } = result;
       const { data: studentData = {} } = students;
+      console.log('studentsData', students);
       return head(StudentTransform(studentData, students).data);
     });
 }
@@ -158,6 +171,7 @@ function getByCustomFilters(customFilters = {}, take = 100, page = 1) {
           ...ParentInfo
           ...ClassesInfo
           ...SessionInfo
+          ...SubjectInfo
         }
         per_page
         last_page
@@ -170,6 +184,7 @@ function getByCustomFilters(customFilters = {}, take = 100, page = 1) {
     ${fragments.classes}
     ${fragments.session}
     ${fragments.userParent}
+    ${fragments.subject}
   `;
 
   return getClient()
@@ -193,6 +208,7 @@ function update(student) {
         ...ParentInfo
         ...ClassesInfo
         ...SessionInfo
+        ...SubjectInfo
       }
     }
     ${fragments.user}
@@ -200,6 +216,7 @@ function update(student) {
     ${fragments.classes}
     ${fragments.session}
     ${fragments.userParent}
+    ${fragments.subject}
   `;
   const sanitizeStudent = transformToUpdate(student);
 

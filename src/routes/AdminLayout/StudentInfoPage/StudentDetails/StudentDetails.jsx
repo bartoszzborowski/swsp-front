@@ -17,7 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import GradientButton from 'components/Button/GradientButton';
 import EditIcon from '@material-ui/icons/Edit';
 import Box from '@material-ui/core/Box';
-import { redirectTo, STUDENT_INFO_EDIT_PAGE } from '../../../../config/routes';
+import { redirectTo, STUDENT_INFO_EDIT_PAGE } from 'config/routes';
 
 class StudentDetails extends React.Component {
   componentDidMount() {

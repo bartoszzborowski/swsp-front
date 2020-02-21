@@ -4,7 +4,7 @@ import { CardHeader } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import { connect } from 'react-redux';
 import { getValue } from 'helpers';
-import { getList } from 'stores/actions';
+import { create, update, getList } from 'stores/actions';
 import { resourceName } from 'stores/resources';
 import { SelectNav } from './SelectNav';
 import MaterialTable from 'material-table';
@@ -13,6 +13,9 @@ import GradientButton from 'components/Button/GradientButton';
 import DoneIcon from '@material-ui/icons/Done';
 import Box from '@material-ui/core/Box';
 import studentService from 'services/student.service';
+import { fields } from 'stores/transformers/attendanceTransformer';
+import { attendanceTypes } from 'config/attendanceTypes';
+import attendanceService from '/services/attendance.service';
 
 class StudentAttendance extends PureComponent {
   constructor(props) {
@@ -21,11 +24,13 @@ class StudentAttendance extends PureComponent {
     this.state = {
       attendances: [],
       students: [],
+      date: null,
     };
 
     this.searchAttendance = this.searchAttendance.bind(this);
     this.onChangeSelect = this.onChangeSelect.bind(this);
     this.onChangeRadioGroup = this.onChangeRadioGroup.bind(this);
+    this.saveAttendance = this.saveAttendance.bind(this);
   }
 
   componentDidMount() {
@@ -35,6 +40,10 @@ class StudentAttendance extends PureComponent {
   }
 
   onChangeSelect(values) {
+    if (values.date) {
+      this.setState({ date: values.date });
+    }
+
     if (values && values.classes && values.session) {
       const { getListSubject } = this.props;
       getListSubject({ class_id: values.classes });
@@ -43,15 +52,63 @@ class StudentAttendance extends PureComponent {
 
   searchAttendance(values) {
     if (values && values.classes && values.session && values.subjects) {
-      studentService.getByCustomFilters({ class_id: values.classes }).then(
-        students => {
-          console.log('students', students);
-          this.setState({ students: getValue(students.data, []) });
-        },
-        error => {
-          console.log('Error fetch attendance students');
-        }
-      );
+      attendanceService
+        .getAllByCustomFilter({
+          subject_id: values.subjects,
+          class_id: values.classes,
+          timestamp: values.date,
+        })
+        .then(items => {
+          studentService.getByCustomFilters({ class_id: values.classes }).then(
+            students => {
+              const studentsData = getValue(students.data, []);
+              const attendanceData = getValue(items.data, []);
+
+              console.log('studentsData', studentsData);
+              console.log('attendanceData', attendanceData);
+
+              const attendanceDataWithAttendance = studentsData.map(student => {
+                const filteredAttendance = attendanceData.find(
+                  attendance => attendance.studentId === student.id
+                );
+
+                if (filteredAttendance) {
+                  return {
+                    ...student,
+                    attendanceId: filteredAttendance.id,
+                    attendanceStatus: filteredAttendance.status,
+                    timestamp: filteredAttendance.timestamp,
+                  };
+                }
+
+                return student;
+              });
+
+              const attendances = attendanceDataWithAttendance.reduce(
+                (obj, item) => (
+                  (obj[item.id] = item.attendanceStatus
+                    ? item.attendanceStatus
+                    : attendanceTypes.present),
+                  obj
+                ),
+                {}
+              );
+              console.log('attendanceDataWithAttendance', attendances);
+              console.log(
+                'attendanceDataWithAttendance',
+                attendanceDataWithAttendance
+              );
+              this.setState({
+                students: attendanceDataWithAttendance,
+                attendances,
+              });
+              this.forceUpdate();
+            },
+            error => {
+              console.log('Error fetch attendance students');
+            }
+          );
+        });
     }
   }
 
@@ -61,6 +118,43 @@ class StudentAttendance extends PureComponent {
         state.attendances[id] = value;
       });
     };
+  }
+
+  saveAttendance() {
+    const { attendances, students, date } = this.state;
+    const { attendanceCreate, attendanceUpdate } = this.props;
+
+    const dataToCreate = [];
+    const dataToUpdate = [];
+
+    students.forEach(item => {
+      const data = {
+        [fields.status]: attendances[item.id],
+        [fields.classId]: item.classId,
+        [fields.subjectId]: item.subjectId,
+        [fields.sessionId]: item.sessionId,
+        [fields.sectionId]: 1,
+        [fields.schoolId]: item.sessionId,
+        [fields.studentId]: item.id,
+      };
+
+      if (item.attendanceId) {
+        data[fields.id] = item.attendanceId;
+        data[fields.timestamp] = item.timestamp;
+        dataToUpdate.push(data);
+      } else {
+        data[fields.timestamp] = date;
+        dataToCreate.push(data);
+      }
+    });
+
+    if (dataToCreate.length > 0) {
+      attendanceCreate(dataToCreate);
+    }
+
+    if (dataToUpdate.length > 0) {
+      attendanceUpdate(dataToUpdate);
+    }
   }
 
   render() {
@@ -88,13 +182,18 @@ class StudentAttendance extends PureComponent {
     ];
 
     const data = students.map(student => {
+      console.log(
+        'student.attendanceStatus || attendanceTypes.present',
+        student.attendanceStatus || attendanceTypes.present
+      );
       return {
         id: student.id,
         name: student.name,
-        attendance: 'present',
+        attendance: student.attendanceStatus || attendanceTypes.present,
       };
     });
-
+    console.log('attendanceStatus', students);
+    console.log('info', data);
     const show = students.length > 0;
     return (
       <>
@@ -138,6 +237,7 @@ class StudentAttendance extends PureComponent {
                     type="submit"
                     variant="contained"
                     color="primary"
+                    onClick={this.saveAttendance}
                   >
                     Zapisz
                   </GradientButton>
@@ -170,6 +270,8 @@ const actionCreators = {
   getListClasses: getList(resourceName.classes),
   getListSession: getList(resourceName.session),
   getListSubject: getList(resourceName.subject),
+  attendanceCreate: create(resourceName.attendance),
+  attendanceUpdate: update(resourceName.attendance),
 };
 
 const connectedStudentPage = connect(

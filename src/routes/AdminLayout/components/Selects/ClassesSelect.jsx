@@ -8,6 +8,7 @@ export class ClassesSelect extends PureComponent {
       classes,
       loading,
       onChange,
+      value = {},
       placeholder = 'Wybierz...',
     } = this.props;
 
@@ -17,20 +18,26 @@ export class ClassesSelect extends PureComponent {
         return { value: item.id, label: item.name };
       });
 
-    return (
-      <div>
-        <Select
-          placeholder={placeholder}
-          isLoading={loading}
-          onChange={onChange}
-          options={classesOptions}
-        />
-      </div>
+    const select = (
+      <Select
+        placeholder={placeholder}
+        isLoading={loading}
+        onChange={onChange}
+        options={classesOptions}
+      />
     );
+
+    const { label, value: tempValue } = value;
+
+    return label && tempValue
+      ? React.cloneElement(select, { defaultValue: value })
+      : select;
   }
 }
 
 ClassesSelect.propTypes = {
   classes: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  value: PropTypes.any,
 };

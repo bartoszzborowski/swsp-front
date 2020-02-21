@@ -8,6 +8,7 @@ export class SessionSelect extends PureComponent {
       sessions,
       loading,
       onChange,
+      value = {},
       placeholder = 'Wybierz...',
     } = this.props;
 
@@ -17,20 +18,26 @@ export class SessionSelect extends PureComponent {
         return { value: item.id, label: item.name };
       });
 
-    return (
-      <div>
-        <Select
-          placeholder={placeholder}
-          isLoading={loading}
-          onChange={onChange}
-          options={sessionsOption}
-        />
-      </div>
+    const select = (
+      <Select
+        placeholder={placeholder}
+        isLoading={loading}
+        onChange={onChange}
+        options={sessionsOption}
+      />
     );
+
+    const { label, value: tempValue } = value;
+
+    return label && tempValue
+      ? React.cloneElement(select, { defaultValue: value })
+      : select;
   }
 }
 
 SessionSelect.propTypes = {
   sessions: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  value: PropTypes.any,
 };

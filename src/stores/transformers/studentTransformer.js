@@ -2,11 +2,12 @@ import { filterUndefined, getValue, wrapPaginate } from 'helpers';
 
 export const transform = (data, pagination) => {
   const serializedData = data.map(item => {
-    const { user, parent, classes, session } = item;
+    const { user, parent, classes, session, subject } = item;
     const parentUser = getValue(parent.user, {});
     const studentUser = getValue(user, {});
     const studentClasses = getValue(classes, {});
     const studentSession = getValue(session, {});
+    const studentSubject = getValue(subject, {});
 
     return {
       id: getValue(item.id),
@@ -20,6 +21,8 @@ export const transform = (data, pagination) => {
       phone: getValue(studentUser.phone),
       sessionId: getValue(studentSession.id),
       sessionName: getValue(studentSession.name),
+      subjectId: getValue(studentSubject.id),
+      subjectName: getValue(studentSubject.name),
     };
   });
 
@@ -55,7 +58,8 @@ export const transformToUpdate = data => {
     blood_group: getValue(data.blood_group, undefined),
     classes_id: getValue(data.classId, undefined),
     parent_id: getValue(data.parentId, undefined),
-    school_id: getValue(data.school_id, undefined),
+    school_id: getValue(data.schoolId, undefined),
     session_id: getValue(data.sessionId, undefined),
+    subject_id: getValue(data.subjectId, undefined),
   });
 };

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
+import { attendanceTypes } from 'config/attendanceTypes';
 
 class RadioButtonGroup extends PureComponent {
   constructor(props) {
@@ -35,13 +36,21 @@ class RadioButtonGroup extends PureComponent {
         onChange={this.handleChange}
         row
       >
-        <FormControlLabel value="present" control={<Radio />} label="Obecny" />
         <FormControlLabel
-          value="absent"
+          value={attendanceTypes.present}
+          control={<Radio />}
+          label="Obecny"
+        />
+        <FormControlLabel
+          value={attendanceTypes.absent}
           control={<Radio />}
           label="Nieobecny"
         />
-        <FormControlLabel value="leave" control={<Radio />} label="Uciekł" />
+        <FormControlLabel
+          value={attendanceTypes.leave}
+          control={<Radio />}
+          label="Uciekł"
+        />
       </RadioGroup>
     );
   }

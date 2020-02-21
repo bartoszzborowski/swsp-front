@@ -15,6 +15,7 @@ const services = {
   parents: require('services/parents.service'),
   session: require('services/session.service'),
   subject: require('services/subject.service'),
+  attendance: require('services/attendance.service'),
 };
 
 export const getList = scope => () => {
