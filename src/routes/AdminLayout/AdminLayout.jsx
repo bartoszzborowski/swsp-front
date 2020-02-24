@@ -22,6 +22,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import style from './AdminLayout.module.scss';
 import {
+  CLASSES_LIST_PAGE,
+  CLASSES_PAGE,
   getLink,
   LOGIN_PAGE,
   SETTINGS_PAGE,
@@ -93,6 +95,17 @@ class AdminLayout extends React.Component {
           {
             title: 'Dziennik obecności',
             href: getLink(STUDENT_ATTENDANCE),
+          },
+        ],
+      },
+      {
+        title: 'Akademia',
+        href: getLink(CLASSES_PAGE),
+        icon: <PeopleIcon />,
+        nested: [
+          {
+            title: 'Klasy',
+            href: getLink(CLASSES_LIST_PAGE),
           },
         ],
       },

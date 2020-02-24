@@ -27,6 +27,8 @@ import {
   StudentAttendance,
 } from 'routes/AdminLayout/StudentInfoPage';
 
+import { ClassesList } from 'routes/AdminLayout/AcademicsPage/Classes/ClassesList';
+
 export const LOGIN_PAGE = 'login_page';
 export const REGISTER_PAGE = 'register_page';
 export const HOME_PAGE = 'home_page';
@@ -50,6 +52,9 @@ export const USER_INFO_LIST_PAGE = 'user_info_list_page';
 export const USER_INFO_CREATE_PAGE = 'user_info_create_page';
 export const USER_INFO_EDIT_PAGE = 'user_info_edit_page';
 
+export const CLASSES_PAGE = 'classes_page';
+export const CLASSES_LIST_PAGE = 'classes_list_page';
+
 export const getLink = name => {
   const route = head(Routes.filter(x => x.slug === name));
   return route ? route.path : null;
@@ -67,6 +72,17 @@ export const redirectTo = (name, parameters = []) => {
     history.push(link);
   }
 };
+
+const classesRouting = [
+  {
+    slug: CLASSES_LIST_PAGE,
+    private: true,
+    exect: false,
+    path: '/classes/list',
+    component: ClassesList,
+    layout: AdminLayout,
+  },
+];
 
 export const Routes = [
   {
@@ -205,6 +221,7 @@ export const Routes = [
     component: SettingPayment,
     layout: AdminLayout,
   },
+  ...classesRouting,
 ];
 
 console.log('DefaultRoutes', Routes);
