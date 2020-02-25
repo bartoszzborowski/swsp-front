@@ -5,6 +5,8 @@ export const resourceName = {
   session: 'session',
   subject: 'subject',
   attendance: 'attendance',
+  exams: 'exams',
+  routines: 'routines',
 };
 
 export default [
@@ -25,5 +27,11 @@ export default [
   },
   {
     name: resourceName.attendance,
+  },
+  {
+    name: resourceName.exams,
+  },
+  {
+    name: resourceName.routines,
   },
 ];

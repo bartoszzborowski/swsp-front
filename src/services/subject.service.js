@@ -22,7 +22,7 @@ function getAll(customFilters = {}) {
         last_page
         current_page
         total
-      }
+      }1
     }
   `;
 
