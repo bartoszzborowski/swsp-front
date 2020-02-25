@@ -60,7 +60,6 @@ class CheckboxGroup extends PureComponent {
   render() {
     const { label } = this.props;
     const { checkbox, checkboxSelected } = this.state;
-
     return (
       <>
         <FormControl component="fieldset">

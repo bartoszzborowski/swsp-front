@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import { getClient } from 'data/client/apolloClient';
+import { handleResponse } from 'helpers';
 import {
   transform,
   transformToSave,
-} from 'stores/transformers/attendanceTransformer';
-import { handleResponse } from 'helpers';
-import { transform as sessionTransform } from '../stores/transformers/sessionTransformer';
+} from '../stores/transformers/sectionsTransformer';
+import head from 'lodash/head';
 
 const sectionsService = {
   create,
@@ -13,32 +13,23 @@ const sectionsService = {
   remove,
   getById,
   getAll,
-  getAllByCustomFilter,
 };
 
 const fragments = {
   section: gql`
     fragment SectionInfo on SectionType {
       id
-      email
       name
-      last_name
-      address
-      phone
-      birthday
-      blood_group
-      gender
-      token
+      class_id
+      school_id
     }
   `,
 };
 
-function remove() {}
-
 function getAll() {
   const QUERY = gql`
     query($take: Int!, $page: Int!) {
-      sections(pagination: { take: $take, page: $page }) {
+      classSections(pagination: { take: $take, page: $page }) {
         data {
           ...SectionInfo
         }
@@ -52,10 +43,10 @@ function getAll() {
     .then(handleResponse)
     .then(result => {
       const {
-        data: { sections },
+        data: { classSections },
       } = result;
-      const { data: SectionData } = sections;
-      return sessionTransform(SectionData);
+      const { data: SectionData } = classSections;
+      return transform(SectionData);
     });
 }
 
@@ -63,87 +54,77 @@ function getById() {}
 
 function create(section) {
   const MUTATION = gql`
-    mutation($input: ExamInputType) {
-      createSection(input: $input) {
+    mutation($input: ClassSectionInputType) {
+      createClassSection(input: $input) {
         ...SectionInfo
       }
     }
     ${fragments.section}
   `;
 
-  const serializedAttendance = transformToSave(section);
+  const serializedSection = transformToSave(section);
 
   return getClient()
     .mutate({
       mutation: MUTATION,
-      variables: { input: serializedAttendance },
+      variables: { input: serializedSection },
     })
     .then(handleResponse)
     .then(result => {
       const {
-        data: { createSection },
+        data: { createClassSection },
       } = result;
 
-      return null;
+      return head(transform([createClassSection]));
     });
 }
 
 function update(section) {
   const MUTATION = gql`
-    mutation($input: UpdateSectionInputType) {
-      updateSection(input: $input) {
+    mutation($input: UpdateClassSectionInputType) {
+      updateClassSection(input: $input) {
         ...SectionInfo
       }
     }
     ${fragments.section}
   `;
 
-  const serializedAttendance = transformToSave(section);
+  const serializedSection = transformToSave(section);
 
   return getClient()
     .mutate({
       mutation: MUTATION,
-      variables: { input: serializedAttendance },
+      variables: { input: serializedSection },
     })
     .then(handleResponse)
     .then(result => {
       const {
-        data: { updateSection },
+        data: { updateClassSection },
       } = result;
 
-      return null;
+      return head(transform([updateClassSection]));
     });
 }
 
-function getAllByCustomFilter(customFilters = {}, take = 100, page = 1) {
-  const QUERY = gql`
-    query($take: Int!, $page: Int!, $filters: FiltersAttendanceInputType) {
-      attendance(pagination: { take: $take, page: $page }, filters: $filters) {
-        data {
-          id
-          student_id
-          subject_id
-          status
-          timestamp
-        }
-        per_page
-        last_page
-        current_page
-        total
-      }
+function remove(id) {
+  const MUTATION = gql`
+    mutation($ids: [Int]) {
+      deleteClassSection(ids: $ids)
     }
   `;
 
   return getClient()
-    .query({ query: QUERY, variables: { take, page, filters: customFilters } })
+    .mutate({
+      mutation: MUTATION,
+      variables: { ids: [id] },
+    })
     .then(handleResponse)
     .then(result => {
       const {
-        data: { attendance },
+        data: { deleteClassSection },
       } = result;
-      const { data: attendanceData = {} } = attendance;
 
-      return null;
+      return { id, deleteClassSection };
     });
 }
 

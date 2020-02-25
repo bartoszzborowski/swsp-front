@@ -24,6 +24,7 @@ import style from './AdminLayout.module.scss';
 import {
   CLASSES_LIST_PAGE,
   CLASSES_PAGE,
+  CLASSES_SECTION_LIST_PAGE,
   getLink,
   LOGIN_PAGE,
   SETTINGS_PAGE,
@@ -106,6 +107,10 @@ class AdminLayout extends React.Component {
           {
             title: 'Klasy',
             href: getLink(CLASSES_LIST_PAGE),
+          },
+          {
+            title: 'Sekcje',
+            href: getLink(CLASSES_SECTION_LIST_PAGE),
           },
         ],
       },

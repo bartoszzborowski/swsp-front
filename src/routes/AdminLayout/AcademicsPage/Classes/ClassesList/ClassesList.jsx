@@ -14,30 +14,41 @@ import { getList, create, remove, update } from 'stores/actions';
 import { resourceName } from 'stores/resources';
 import { connect } from 'react-redux';
 import CheckboxGroup from 'routes/AdminLayout/components/CheckboxGroup/CheckboxGroup';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 class ClassesList extends React.Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+
+    this.state = {
+      currentClass: {},
+    };
   }
 
   componentDidMount() {
-    const { getClassesList } = this.props;
+    const { getClassesList, getSectionList } = this.props;
     getClassesList();
+    getSectionList();
   }
 
   onChange(values) {
     this.setState({ ...values });
   }
 
+  editRecordHandle(event, rowData) {
+    console.log('rowData', rowData);
+  }
+
   render() {
     const {
       classes,
+      sections,
       isLoading,
-      createSession,
-      getListSession,
-      deleteSession,
-      updateSession,
+      createClass,
+      getClassesList,
+      removeClass,
+      updateClass,
     } = this.props;
     const initialValues = { session: '' };
     const columns = [
@@ -46,6 +57,14 @@ class ClassesList extends React.Component {
       { title: 'Sekcja', field: 'section' },
     ];
 
+    const sectionsCheckboxOption =
+      sections &&
+      sections.map(item => {
+        return {
+          value: item.id,
+          label: item.name,
+        };
+      });
     return (
       <div>
         <Grid container spacing={4}>
@@ -56,8 +75,8 @@ class ClassesList extends React.Component {
                 <Formik
                   initialValues={initialValues}
                   onSubmit={(values, { setSubmitting, resetForm }) => {
-                    createSession(values).then(item => {
-                      getListSession();
+                    createClass(values).then(item => {
+                      getClassesList();
                       setSubmitting(false);
                       resetForm();
                     });
@@ -70,14 +89,16 @@ class ClassesList extends React.Component {
                         label={'Klasa'}
                         props={props}
                       />
-                      <CheckboxGroup
-                        label={'Sekcje'}
-                        onChange={this.onChange}
-                        elements={[
-                          { value: 'test', label: 'dupa 1' },
-                          { value: 'test_2', label: 'dupa 2' },
-                        ]}
-                      />
+                      {sectionsCheckboxOption.length === 0 && (
+                        <LinearProgress />
+                      )}
+                      {sectionsCheckboxOption.length > 0 && (
+                        <CheckboxGroup
+                          label={'Sekcje'}
+                          onChange={this.onChange}
+                          elements={sectionsCheckboxOption}
+                        />
+                      )}
                       <Grid spacing={3} container>
                         <Grid item xs={12}>
                           <Box
@@ -110,7 +131,7 @@ class ClassesList extends React.Component {
                 editable={{
                   onRowUpdate: (newData, oldData) =>
                     new Promise((resolve, reject) => {
-                      updateSession(newData).then(
+                      updateClass(newData).then(
                         () => {
                           resolve({
                             data: newData,
@@ -123,7 +144,7 @@ class ClassesList extends React.Component {
                     }),
                   onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
-                      deleteSession(oldData.id).then(() => {
+                      removeClass(oldData.id).then(() => {
                         resolve();
                       });
                     }),
@@ -131,10 +152,9 @@ class ClassesList extends React.Component {
                 data={classes}
                 actions={[
                   {
-                    icon: 'save',
+                    icon: 'edit',
                     tooltip: 'Save User',
-                    onClick: (event, rowData) =>
-                      alert('You saved ' + rowData.name),
+                    onClick: this.editRecordHandle,
                   },
                 ]}
                 options={{
@@ -152,15 +172,22 @@ class ClassesList extends React.Component {
 
 const mapStateToProps = state => {
   const { items = [], loading } = state.classes;
+  const { items: sectionItems = [], loading: sectionLoading } = state.sections;
 
   return {
     classes: getValue(items, []),
+    sections: getValue(sectionItems, []),
+    sectionLoading,
     isLoading: loading,
   };
 };
 
 const actionCreators = {
   getClassesList: getList(resourceName.classes),
+  getSectionList: getList(resourceName.sections),
+  createClass: create(resourceName.classes),
+  updateClass: update(resourceName.classes),
+  removeClass: remove(resourceName.classes),
 };
 
 const connectedPage = connect(mapStateToProps, actionCreators)(ClassesList);

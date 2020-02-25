@@ -3,6 +3,7 @@ import { getClient } from 'data/client/apolloClient';
 import { transform as classesTransform } from 'stores/transformers/classesTransformer';
 import head from 'lodash/head';
 import { handleResponse } from 'helpers';
+import { classesFragment, sectionsFragment } from './fragments';
 
 const classesService = {
   getAll,
@@ -13,15 +14,18 @@ function getAll() {
     query($take: Int!, $page: Int!) {
       classes(pagination: { take: $take, page: $page }) {
         data {
-          id
-          name
-        }
+          ...ClassesInfo
+          sections {
+            ...SectionInfo
+          }
         per_page
         last_page
         current_page
         total
       }
     }
+    ${classesFragment.classes}
+    ${sectionsFragment.section}
   `;
 
   return getClient()

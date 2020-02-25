@@ -8,14 +8,16 @@ import {
 } from '../actionsCreator';
 import { notifierActions } from './notifier.actions';
 import { TYPE_ERROR } from 'helpers';
+import { resourceName } from 'stores/resources';
 
 const services = {
-  student: require('services/student.service'),
-  classes: require('services/classes.service'),
-  parents: require('services/parents.service'),
-  session: require('services/session.service'),
-  subject: require('services/subject.service'),
-  attendance: require('services/attendance.service'),
+  [resourceName.student]: require('services/student.service'),
+  [resourceName.classes]: require('services/classes.service'),
+  [resourceName.parents]: require('services/parents.service'),
+  [resourceName.session]: require('services/session.service'),
+  [resourceName.subject]: require('services/subject.service'),
+  [resourceName.attendance]: require('services/attendance.service'),
+  [resourceName.sections]: require('services/sections.service'),
 };
 
 export const getList = scope => () => {
