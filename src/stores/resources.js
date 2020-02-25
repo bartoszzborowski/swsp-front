@@ -7,6 +7,7 @@ export const resourceName = {
   attendance: 'attendance',
   exams: 'exams',
   routines: 'routines',
+  sections: 'sections',
 };
 
 export default [
@@ -33,5 +34,8 @@ export default [
   },
   {
     name: resourceName.routines,
+  },
+  {
+    name: resourceName.sections,
   },
 ];

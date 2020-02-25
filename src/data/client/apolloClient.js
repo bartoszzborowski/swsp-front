@@ -15,8 +15,8 @@ const defaultOptions = {
 };
 
 const link = new HttpLink({
-  // uri: 'http://127.0.0.1:8020/graphql',
-  uri: 'http://192.168.0.213:8020/graphql',
+  uri: 'http://127.0.0.1:8020/graphql',
+  // uri: 'http://192.168.0.213:8020/graphql',
 });
 
 const config = {

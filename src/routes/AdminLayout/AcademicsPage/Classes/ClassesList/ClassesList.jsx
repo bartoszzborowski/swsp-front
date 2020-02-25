@@ -22,8 +22,8 @@ class ClassesList extends React.Component {
   }
 
   componentDidMount() {
-    const { getListSession } = this.props;
-    getListSession();
+    const { getClassesList } = this.props;
+    getClassesList();
   }
 
   onChange(values) {
@@ -32,7 +32,7 @@ class ClassesList extends React.Component {
 
   render() {
     const {
-      sessions,
+      classes,
       isLoading,
       createSession,
       getListSession,
@@ -45,7 +45,7 @@ class ClassesList extends React.Component {
       { title: 'Klasa', field: 'name' },
       { title: 'Sekcja', field: 'section' },
     ];
-    console.log('this.state', this.state);
+
     return (
       <div>
         <Grid container spacing={4}>
@@ -128,7 +128,7 @@ class ClassesList extends React.Component {
                       });
                     }),
                 }}
-                data={sessions}
+                data={classes}
                 actions={[
                   {
                     icon: 'save',
@@ -151,19 +151,16 @@ class ClassesList extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { items = [], loading } = state.session;
+  const { items = [], loading } = state.classes;
 
   return {
-    sessions: getValue(items, []),
+    classes: getValue(items, []),
     isLoading: loading,
   };
 };
 
 const actionCreators = {
-  getListSession: getList(resourceName.session),
-  createSession: create(resourceName.session),
-  deleteSession: remove(resourceName.session),
-  updateSession: update(resourceName.session),
+  getClassesList: getList(resourceName.classes),
 };
 
 const connectedPage = connect(mapStateToProps, actionCreators)(ClassesList);
