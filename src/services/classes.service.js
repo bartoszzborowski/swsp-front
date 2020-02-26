@@ -1,12 +1,17 @@
 import gql from 'graphql-tag';
 import { getClient } from 'data/client/apolloClient';
-import { transform as classesTransform } from 'stores/transformers/classesTransformer';
 import head from 'lodash/head';
 import { handleResponse } from 'helpers';
 import { classesFragment, sectionsFragment } from './fragments';
+import {
+  transform,
+  transformToSave,
+} from '../stores/transformers/classesTransformer';
 
 const classesService = {
   getAll,
+  update,
+  create,
 };
 
 function getAll() {
@@ -36,8 +41,71 @@ function getAll() {
       const {
         data: { classes },
       } = result;
+      console.log('result', result);
       const { data: ClassesData } = classes;
-      return classesTransform(ClassesData);
+      return transform(ClassesData);
+    });
+}
+
+function create(section) {
+  const MUTATION = gql`
+    mutation($input: ClassInputType) {
+      createClass(input: $input) {
+        ...ClassesInfo
+        sections {
+          ...SectionInfo
+        }
+      }
+    }
+    ${classesFragment.classes}
+    ${sectionsFragment.section}
+  `;
+
+  const serializedSData = transformToSave(section);
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { input: serializedSData },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { createClass },
+      } = result;
+
+      return head(transform([createClass]));
+    });
+}
+
+function update(section) {
+  const MUTATION = gql`
+    mutation($input: UpdateClassInputType) {
+      updateClass(input: $input) {
+        ...ClassesInfo
+        sections {
+          ...SectionInfo
+        }
+      }
+    }
+    ${classesFragment.classes}
+    ${sectionsFragment.section}
+  `;
+
+  const serializedSData = transformToSave(section);
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { input: serializedSData },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { createClasses },
+      } = result;
+
+      return head(transform([createClasses]));
     });
 }
 

@@ -6,16 +6,41 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+import style from './CheckboxGroup.module.scss';
+
 class CheckboxGroup extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      checkbox: [],
+      checkboxSelected: [],
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    this.prepareData();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (
+      prevProps.defaultSelected.length !== this.props.defaultSelected.length
+    ) {
+      this.prepareData();
+    }
+  }
+
+  prepareData() {
     const checkboxSerialized = [];
-    const { onChange } = this.props;
-    const itemToRender = props.elements.map(item => {
+    const { onChange, defaultSelected = [], elements } = this.props;
+
+    const itemToRender = elements.map(item => {
       checkboxSerialized[item.value] = {
         value: item.value,
         label: item.label,
-        checked: item.checked || false,
+        checked: defaultSelected.includes(item.value)
+          ? true
+          : item.checked || false,
       };
 
       return {
@@ -24,16 +49,20 @@ class CheckboxGroup extends PureComponent {
         checked: item.checked || false,
       };
     });
-    this.state = {
-      checkbox: itemToRender,
-      checkboxSelected: checkboxSerialized,
-    };
+
+    this.setState(
+      {
+        checkbox: itemToRender,
+        checkboxSelected: checkboxSerialized,
+      },
+      () => {
+        this.forceUpdate();
+      }
+    );
 
     if (onChange) {
       onChange(checkboxSerialized);
     }
-
-    this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(name) {
@@ -60,13 +89,15 @@ class CheckboxGroup extends PureComponent {
   render() {
     const { label } = this.props;
     const { checkbox, checkboxSelected } = this.state;
+
     return (
       <>
-        <FormControl component="fieldset">
+        <FormControl className={style.checkboxGroup} component="fieldset">
           <FormLabel component="legend">{label}</FormLabel>
           <FormGroup>
             {checkbox.map(item => (
               <FormControlLabel
+                key={item.value}
                 control={
                   <Checkbox
                     checked={checkboxSelected[item.value].checked}
@@ -87,9 +118,10 @@ class CheckboxGroup extends PureComponent {
 CheckboxGroup.propTypes = {
   onChange: PropTypes.func,
   label: PropTypes.string.isRequired,
+  defaultSelected: PropTypes.array,
   elements: PropTypes.arrayOf(
     PropTypes.shape({
-      value: PropTypes.string.isRequired,
+      value: PropTypes.any.isRequired,
       label: PropTypes.string.isRequired,
       checked: PropTypes.bool,
     })

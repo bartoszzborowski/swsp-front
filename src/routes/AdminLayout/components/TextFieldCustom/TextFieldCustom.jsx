@@ -13,7 +13,7 @@ const TextFieldCustom = props => {
     ...rest
   } = props;
   const { handleChange, handleBlur, errors, touched, values } = InputProps;
-  console.log('values', values);
+
   return (
     <TextField
       {...rest}

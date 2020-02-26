@@ -182,18 +182,13 @@ class StudentAttendance extends PureComponent {
     ];
 
     const data = students.map(student => {
-      console.log(
-        'student.attendanceStatus || attendanceTypes.present',
-        student.attendanceStatus || attendanceTypes.present
-      );
       return {
         id: student.id,
         name: student.name,
         attendance: student.attendanceStatus || attendanceTypes.present,
       };
     });
-    console.log('attendanceStatus', students);
-    console.log('info', data);
+
     const show = students.length > 0;
     return (
       <>

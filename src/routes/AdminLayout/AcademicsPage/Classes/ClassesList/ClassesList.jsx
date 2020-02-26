@@ -10,7 +10,7 @@ import GradientButton from 'components/Button/GradientButton';
 import DoneIcon from '@material-ui/icons/Done';
 import Box from '@material-ui/core/Box';
 import { getValue } from 'helpers';
-import { getList, create, remove, update } from 'stores/actions';
+import { create, getList, remove, update } from 'stores/actions';
 import { resourceName } from 'stores/resources';
 import { connect } from 'react-redux';
 import CheckboxGroup from 'routes/AdminLayout/components/CheckboxGroup/CheckboxGroup';
@@ -19,11 +19,13 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 class ClassesList extends React.Component {
   constructor(props) {
     super(props);
-    this.onChange = this.onChange.bind(this);
-
     this.state = {
       currentClass: {},
+      checkbox: [],
     };
+
+    this.onChange = this.onChange.bind(this);
+    this.editRecordHandle = this.editRecordHandle.bind(this);
   }
 
   componentDidMount() {
@@ -33,11 +35,11 @@ class ClassesList extends React.Component {
   }
 
   onChange(values) {
-    this.setState({ ...values });
+    this.setState({ checkbox: { ...values } });
   }
 
   editRecordHandle(event, rowData) {
-    console.log('rowData', rowData);
+    this.setState({ currentClass: rowData });
   }
 
   render() {
@@ -50,11 +52,23 @@ class ClassesList extends React.Component {
       removeClass,
       updateClass,
     } = this.props;
-    const initialValues = { session: '' };
+    const { currentClass, checkbox = [] } = this.state;
+
+    const initialValues = currentClass.name
+      ? { classes: currentClass.name }
+      : { classes: null };
+
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
       { title: 'Klasa', field: 'name' },
-      { title: 'Sekcja', field: 'section' },
+      {
+        title: 'Sekcja',
+        field: 'sections',
+        render: rowData =>
+          rowData.sections.map(item => {
+            return <li>{item.name}</li>;
+          }),
+      },
     ];
 
     const sectionsCheckboxOption =
@@ -65,6 +79,12 @@ class ClassesList extends React.Component {
           label: item.name,
         };
       });
+
+    const defaultSelected =
+      (currentClass.hasOwnProperty('sections') &&
+        currentClass.sections.map(item => item.id)) ||
+      [];
+
     return (
       <div>
         <Grid container spacing={4}>
@@ -73,13 +93,35 @@ class ClassesList extends React.Component {
               <CardHeader title={'Dodaj klasę'} />
               <CardContent>
                 <Formik
+                  enableReinitialize="true"
                   initialValues={initialValues}
                   onSubmit={(values, { setSubmitting, resetForm }) => {
-                    createClass(values).then(item => {
-                      getClassesList();
-                      setSubmitting(false);
-                      resetForm();
+                    const checkedCheckbox = [];
+                    Object.entries(checkbox).forEach(([key, val]) => {
+                      return val.checked === true
+                        ? checkedCheckbox.push(val)
+                        : undefined;
                     });
+
+                    if (currentClass.hasOwnProperty('sections')) {
+                      values.sections = checkedCheckbox;
+                      values.id = currentClass.id;
+
+                      updateClass(values).then(() => {
+                        getClassesList();
+                        setSubmitting(false);
+                        resetForm();
+                      });
+                    } else {
+                      values.sections = checkedCheckbox;
+                      createClass(values).then(item => {
+                        getClassesList();
+                        setSubmitting(false);
+                        resetForm();
+                      });
+
+                      this.setState({ currentClass: {}, checkbox: [] });
+                    }
                   }}
                 >
                   {props => (
@@ -94,8 +136,10 @@ class ClassesList extends React.Component {
                       )}
                       {sectionsCheckboxOption.length > 0 && (
                         <CheckboxGroup
+                          name={'sections'}
                           label={'Sekcje'}
                           onChange={this.onChange}
+                          defaultSelected={defaultSelected}
                           elements={sectionsCheckboxOption}
                         />
                       )}
