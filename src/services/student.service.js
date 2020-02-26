@@ -67,8 +67,7 @@ const fragments = {
     }
   `,
   userParent: gql`
-    fragment ParentInfo
-    User on ParentType {
+    fragment ParentInfoUser on ParentType {
       user {
         id
         email

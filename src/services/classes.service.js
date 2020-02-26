@@ -18,6 +18,7 @@ function getAll() {
           sections {
             ...SectionInfo
           }
+        }
         per_page
         last_page
         current_page

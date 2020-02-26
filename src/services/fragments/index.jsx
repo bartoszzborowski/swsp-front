@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-export const classesFragment = {
-  classes: gql`
-    fragment ClassInfo on ClassType {
+export const sectionsFragment = {
+  section: gql`
+    fragment SectionInfo on SectionType {
       id
       name
       class_id
@@ -11,9 +11,9 @@ export const classesFragment = {
   `,
 };
 
-export const sectionsFragment = {
-  section: gql`
-    fragment SectionInfo on SectionType {
+export const classesFragment = {
+  classes: gql`
+    fragment ClassesInfo on ClassType {
       id
       name
     }
