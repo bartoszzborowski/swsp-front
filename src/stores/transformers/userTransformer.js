@@ -16,7 +16,7 @@ export const transform = (data, pagination) => {
         bloodGroup: getValue(serializedUser.blood_group),
         gender: getValue(serializedUser.gender),
         marital: getValue(serializedUser.marital),
-        role: getValue(serializedUser.role),
+        role: getValue(serializedUser.roles),
       };
     }),
     pagination

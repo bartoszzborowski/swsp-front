@@ -1,10 +1,17 @@
 import gql from 'graphql-tag';
 import { getClient } from 'data/client/apolloClient';
-import { transform } from 'stores/transformers/subjectTransformer';
+import {
+  transform,
+  transformToSave,
+} from 'stores/transformers/subjectTransformer';
 import { handleResponse } from 'helpers';
+import head from 'lodash/head';
 
 const subjectService = {
   getAll,
+  create,
+  update,
+  remove,
 };
 
 function getAll(customFilters = {}) {
@@ -22,7 +29,7 @@ function getAll(customFilters = {}) {
         last_page
         current_page
         total
-      }1
+      }
     }
   `;
 
@@ -38,6 +45,58 @@ function getAll(customFilters = {}) {
       } = result;
       const { data: SubjectData } = studentSubject;
       return transform(SubjectData);
+    });
+}
+
+function create(student) {
+  const MUTATION = gql`
+    mutation($input: StudentSubjectInputType) {
+      createSubject(input: $input) {
+        id
+        name
+      }
+    }
+  `;
+  const sanitizeData = transformToSave(student);
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { input: { ...sanitizeData } },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { createSubject },
+      } = result;
+
+      return head(transform([createSubject]));
+    });
+}
+
+function update(student) {
+  const MUTATION = gql`
+    mutation($input: UpdateStudentSubjectInputType) {
+      updateSubject(input: $input) {
+        id
+        name
+      }
+    }
+  `;
+  const sanitizeData = transformToSave(student);
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { input: { ...sanitizeData } },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { updateSubject },
+      } = result;
+
+      return head(transform([updateSubject]));
     });
 }
 
@@ -69,6 +128,28 @@ function getByFilter() {
       } = result;
       const { data: ClassesData } = classes;
       return transform(ClassesData);
+    });
+}
+
+function remove(id) {
+  const MUTATION = gql`
+    mutation($ids: [Int]) {
+      deleteSubject(ids: $ids)
+    }
+  `;
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { ids: [id] },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { deleteSubject },
+      } = result;
+
+      return { id, deleteSubject };
     });
 }
 

@@ -35,6 +35,7 @@ import {
   STUDENT_ATTENDANCE,
   STUDENT_INFO_LIST_PAGE,
   STUDENT_INFO_PAGE,
+  SUBJECT_LIST_PAGE,
   USER_INFO_CREATE_PAGE,
   USER_INFO_LIST_PAGE,
   USERS_PAGE,
@@ -111,6 +112,10 @@ class AdminLayout extends React.Component {
           {
             title: 'Sekcje',
             href: getLink(CLASSES_SECTION_LIST_PAGE),
+          },
+          {
+            title: 'Przedmioty szkolne',
+            href: getLink(SUBJECT_LIST_PAGE),
           },
         ],
       },

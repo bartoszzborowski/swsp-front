@@ -1,4 +1,4 @@
-import { getValue } from 'helpers';
+import { filterUndefined, getValue } from 'helpers';
 
 export const transform = data => {
   return data.map(item => {
@@ -8,5 +8,12 @@ export const transform = data => {
       id: getValue(sanitizeSubject.id),
       name: getValue(sanitizeSubject.name),
     };
+  });
+};
+
+export const transformToSave = data => {
+  return filterUndefined({
+    id: getValue(data.id),
+    name: getValue(data.name),
   });
 };

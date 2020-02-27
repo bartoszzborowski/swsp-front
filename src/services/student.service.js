@@ -12,6 +12,7 @@ const studentService = {
   getById,
   update,
   remove,
+  create,
   getByCustomFilters,
 };
 
@@ -196,6 +197,42 @@ function getByCustomFilters(customFilters = {}, take = 100, page = 1) {
       } = result;
       const { data: studentData = {} } = students;
       return StudentTransform(studentData, students);
+    });
+}
+
+function create(student) {
+  const MUTATION = gql`
+    mutation($input: StudentInputType) {
+      createStudent(input: $input) {
+        id
+        ...UserInfo
+        ...ParentInfo
+        ...ClassesInfo
+        ...SessionInfo
+        ...SubjectInfo
+      }
+    }
+    ${fragments.user}
+    ${fragments.parent}
+    ${fragments.classes}
+    ${fragments.session}
+    ${fragments.userParent}
+    ${fragments.subject}
+  `;
+  const sanitizeStudent = transformToUpdate(student);
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { input: { ...sanitizeStudent } },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { createStudent },
+      } = result;
+
+      return head(StudentTransform([createStudent]));
     });
 }
 

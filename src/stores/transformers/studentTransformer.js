@@ -1,9 +1,16 @@
-import { filterUndefined, getValue, wrapPaginate } from 'helpers';
+import {
+  filterUndefined,
+  getCurrentSchool,
+  getValue,
+  wrapPaginate,
+} from 'helpers';
 
 export const transform = (data, pagination) => {
   const serializedData = data.map(item => {
     const { user, parent, classes, session, subject } = item;
-    const parentUser = getValue(parent.user, {});
+    const { user: userFromParent = {} } = getValue(parent, {});
+    const { id: parentId } = getValue(parent, {});
+    const parentUser = getValue(userFromParent, {});
     const studentUser = getValue(user, {});
     const studentClasses = getValue(classes, {});
     const studentSession = getValue(session, {});
@@ -12,9 +19,10 @@ export const transform = (data, pagination) => {
     return {
       id: getValue(item.id),
       name: getValue(studentUser.name),
+      lastName: getValue(studentUser.last_name),
       classId: getValue(studentClasses.id),
       className: getValue(studentClasses.name),
-      parentId: getValue(parent.id),
+      parentId: getValue(parentId),
       parentName: getValue(parentUser.name),
       birthday: getValue(studentUser.birthday),
       gender: getValue(studentUser.gender),
@@ -47,8 +55,9 @@ export const searchTransform = data => {
 
 export const transformToUpdate = data => {
   return filterUndefined({
-    id: getValue(data.id),
+    id: getValue(data.id, undefined),
     name: getValue(data.name, undefined),
+    last_name: getValue(data.lastName, undefined),
     phone: getValue(data.phone, undefined),
     address: getValue(data.address, undefined),
     email: getValue(data.email, undefined),
@@ -58,7 +67,9 @@ export const transformToUpdate = data => {
     blood_group: getValue(data.blood_group, undefined),
     classes_id: getValue(data.classId, undefined),
     parent_id: getValue(data.parentId, undefined),
-    school_id: getValue(data.schoolId, undefined),
+    marital: getValue(data.marital, undefined),
+    role: getValue(data.role, undefined),
+    school_id: getValue(data.schoolId, getCurrentSchool),
     session_id: getValue(data.sessionId, undefined),
     subject_id: getValue(data.subjectId, undefined),
   });

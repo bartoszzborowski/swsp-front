@@ -16,6 +16,7 @@ import studentService from 'services/student.service';
 import { fields } from 'stores/transformers/attendanceTransformer';
 import { attendanceTypes } from 'config/attendanceTypes';
 import attendanceService from '/services/attendance.service';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 class StudentAttendance extends PureComponent {
   constructor(props) {
@@ -51,6 +52,8 @@ class StudentAttendance extends PureComponent {
   }
 
   searchAttendance(values) {
+    this.setState({ students: [] });
+
     if (values && values.classes && values.session && values.subjects) {
       attendanceService
         .getAllByCustomFilter({
@@ -63,9 +66,6 @@ class StudentAttendance extends PureComponent {
             students => {
               const studentsData = getValue(students.data, []);
               const attendanceData = getValue(items.data, []);
-
-              console.log('studentsData', studentsData);
-              console.log('attendanceData', attendanceData);
 
               const attendanceDataWithAttendance = studentsData.map(student => {
                 const filteredAttendance = attendanceData.find(
@@ -93,11 +93,7 @@ class StudentAttendance extends PureComponent {
                 ),
                 {}
               );
-              console.log('attendanceDataWithAttendance', attendances);
-              console.log(
-                'attendanceDataWithAttendance',
-                attendanceDataWithAttendance
-              );
+
               this.setState({
                 students: attendanceDataWithAttendance,
                 attendances,
@@ -166,6 +162,7 @@ class StudentAttendance extends PureComponent {
       subjects,
     } = this.props;
     const { students } = this.state;
+
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
       { title: 'Imię', field: 'name' },

@@ -28,7 +28,8 @@ import {
 } from 'routes/AdminLayout/StudentInfoPage';
 
 import { ClassesList } from 'routes/AdminLayout/AcademicsPage/Classes/ClassesList';
-import { SectionList } from '../routes/AdminLayout/AcademicsPage/Section/SectionList';
+import { SectionList } from 'routes/AdminLayout/AcademicsPage/Section/SectionList';
+import { SubjectList } from 'routes/AdminLayout/AcademicsPage/Subject/SubjectList';
 
 export const LOGIN_PAGE = 'login_page';
 export const REGISTER_PAGE = 'register_page';
@@ -58,6 +59,9 @@ export const CLASSES_LIST_PAGE = 'classes_list_page';
 
 export const CLASSES_SECTION_PAGE = 'classes_section_page';
 export const CLASSES_SECTION_LIST_PAGE = 'classes_section_list_page';
+
+export const SUBJECT_PAGE = 'subject_page';
+export const SUBJECT_LIST_PAGE = 'subject_list_page';
 
 export const getLink = name => {
   const route = head(Routes.filter(x => x.slug === name));
@@ -92,6 +96,14 @@ const academicRouting = [
     exect: false,
     path: '/section/list',
     component: SectionList,
+    layout: AdminLayout,
+  },
+  {
+    slug: SUBJECT_LIST_PAGE,
+    private: true,
+    exect: false,
+    path: '/subject/list',
+    component: SubjectList,
     layout: AdminLayout,
   },
 ];

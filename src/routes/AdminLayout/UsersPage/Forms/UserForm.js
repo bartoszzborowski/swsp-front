@@ -4,24 +4,20 @@ import TextFieldCustom from 'routes/AdminLayout/components/TextFieldCustom/TextF
 import TextFieldSelectCustom from 'routes/AdminLayout/components/TextFieldSelectCustom/TextFieldSelectCustom';
 import DatePickerCustom from 'routes/AdminLayout/components/DatePickerCustom/DatePickerCustom';
 import Grid from '@material-ui/core/Grid';
+import { rolesTable } from 'helpers/roles';
+import { gender } from 'helpers/gender';
 
 export const UserForm = props => {
   const { handleSubmit, isValid, buttonLabel } = props;
 
-  const mailDriver = [
-    {
-      value: 'admin',
-      label: 'Admin',
-    },
-    {
-      value: 'student',
-      label: 'Student',
-    },
-    {
-      value: 'parent',
-      label: 'Parent',
-    },
-  ];
+  const rolesOption = rolesTable.map(item => {
+    return {
+      value: item,
+      label: item,
+    };
+  });
+  const { male, female } = gender;
+  const genderOption = [male, female];
 
   const maritalStatus = [
     {
@@ -41,12 +37,14 @@ export const UserForm = props => {
           <TextFieldCustom label={'Email'} name={'email'} props={props} />
           <TextFieldCustom label={'Telefon'} name={'phone'} props={props} />
           <TextFieldSelectCustom name={'role'} label={'Rola'} props={props}>
-            {mailDriver}
+            {rolesOption}
           </TextFieldSelectCustom>
         </Grid>
         <Grid item lg={4} md={4} xl={4} xs={12}>
           <TextFieldCustom label={'Nazwisko'} name={'lastName'} props={props} />
-          <TextFieldCustom label={'Pleć'} name={'gender'} props={props} />
+          <TextFieldSelectCustom label={'Pleć'} name={'gender'} props={props}>
+            {genderOption}
+          </TextFieldSelectCustom>
           <TextFieldSelectCustom
             label={'Status cywilny'}
             name={'marital'}

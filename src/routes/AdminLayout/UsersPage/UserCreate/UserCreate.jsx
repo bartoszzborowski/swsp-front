@@ -6,23 +6,43 @@ import CardContent from '@material-ui/core/CardContent';
 import { Formik } from 'formik';
 import { UserForm } from '../Forms/UserForm';
 import * as Yup from 'yup';
-import { userActions } from 'stores/actions';
+import { create, userActions } from 'stores/actions';
 import { connect } from 'react-redux';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { redirectTo, USER_INFO_LIST_PAGE } from 'config/routes';
+import {
+  redirectTo,
+  STUDENT_INFO_LIST_PAGE,
+  USER_INFO_LIST_PAGE,
+} from 'config/routes';
+import { roles } from 'helpers/roles';
+import { resourceName } from 'stores/resources';
 
 class UserCreate extends React.Component {
   handleSubmit = (data, { setSubmitting, resetForm }) => {
-    this.props.register(data).then(
-      item => {
-        setSubmitting(false);
-        resetForm();
-        redirectTo(USER_INFO_LIST_PAGE);
-      },
-      error => {
-        console.log('error', error);
-      }
-    );
+    const { createStudent, register } = this.props;
+    if (data.role === roles.student) {
+      createStudent(data).then(
+        item => {
+          setSubmitting(false);
+          resetForm();
+          redirectTo(STUDENT_INFO_LIST_PAGE);
+        },
+        error => {
+          console.log('error', error);
+        }
+      );
+    } else {
+      register(data).then(
+        item => {
+          setSubmitting(false);
+          resetForm();
+          redirectTo(USER_INFO_LIST_PAGE);
+        },
+        error => {
+          console.log('error', error);
+        }
+      );
+    }
   };
 
   render() {
@@ -94,6 +114,7 @@ const mapStateToProps = state => {
 
 const actionCreators = {
   register: userActions.register,
+  createStudent: create(resourceName.student),
 };
 
 const connectedRegisterPage = connect(

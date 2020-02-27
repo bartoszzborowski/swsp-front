@@ -145,12 +145,13 @@ class StudentList extends React.Component {
                 data={query =>
                   new Promise((resolve, reject) => {
                     studentService
-                      .getAll(query.pageSize, query.page)
+                      .getAll(query.pageSize, query.page + 1)
                       .then(result => {
                         this.setState({ students: result.data });
+                        console.log('result', result);
                         resolve({
                           data: result.data,
-                          page: result.page,
+                          page: result.page - 1,
                           totalCount: result.total,
                         });
                       });

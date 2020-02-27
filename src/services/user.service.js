@@ -61,6 +61,7 @@ function getAll(perPage = 100, page = 1) {
           blood_group
           gender
           last_name
+          roles
         }
         per_page
         last_page
@@ -96,6 +97,7 @@ function getById(id) {
           blood_group
           gender
           last_name
+          roles
         }
         total
         per_page
@@ -133,6 +135,7 @@ function register(user) {
         birthday
         blood_group
         token
+        roles
       }
     }
   `;
@@ -163,6 +166,7 @@ function update(user) {
         birthday
         blood_group
         token
+        roles
       }
     }
   `;

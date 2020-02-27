@@ -61,6 +61,7 @@ export const create = scope => data => {
           )
         );
         dispatch(createAction.success(data, scope));
+        return Promise.resolve(data);
       },
       error => {
         dispatch(
@@ -69,6 +70,7 @@ export const create = scope => data => {
           )
         );
         dispatch(createAction.failure(error, scope));
+        return Promise.reject(error);
       }
     );
   };
@@ -85,6 +87,7 @@ export const update = scope => data => {
           )
         );
         dispatch(updateAction.success(data, scope));
+        return Promise.resolve(data);
       },
       error => {
         dispatch(
@@ -93,6 +96,7 @@ export const update = scope => data => {
           )
         );
         dispatch(updateAction.failure(error, scope));
+        return Promise.reject(error);
       }
     );
   };
