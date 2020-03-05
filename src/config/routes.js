@@ -30,6 +30,9 @@ import {
 import { ClassesList } from 'routes/AdminLayout/AcademicsPage/Classes/ClassesList';
 import { SectionList } from 'routes/AdminLayout/AcademicsPage/Section/SectionList';
 import { SubjectList } from 'routes/AdminLayout/AcademicsPage/Subject/SubjectList';
+import { ClassRoom } from 'routes/AdminLayout/AcademicsPage/ClassRoom/ClassRoom';
+import { ClassRoutine } from 'routes/AdminLayout/AcademicsPage/ClassRoutine/ClassRoutine';
+import { SettingSchoolChoice } from '../routes/AdminLayout/SettingsPage/SettingSchoolChoice/SettingSchoolChoice';
 
 export const LOGIN_PAGE = 'login_page';
 export const REGISTER_PAGE = 'register_page';
@@ -62,6 +65,13 @@ export const CLASSES_SECTION_LIST_PAGE = 'classes_section_list_page';
 
 export const SUBJECT_PAGE = 'subject_page';
 export const SUBJECT_LIST_PAGE = 'subject_list_page';
+
+export const CLASS_ROOM_PAGE = 'class_room_page';
+export const CLASS_ROOM_LIST_PAGE = 'class_room_page';
+
+export const CLASS_ROUTINE = 'class_routine';
+
+export const SCHOOL_SELECT_PAGE = 'school_select_page';
 
 export const getLink = name => {
   const route = head(Routes.filter(x => x.slug === name));
@@ -104,6 +114,22 @@ const academicRouting = [
     exect: false,
     path: '/subject/list',
     component: SubjectList,
+    layout: AdminLayout,
+  },
+  {
+    slug: CLASS_ROOM_LIST_PAGE,
+    private: true,
+    exect: false,
+    path: '/class-room/list',
+    component: ClassRoom,
+    layout: AdminLayout,
+  },
+  {
+    slug: CLASS_ROUTINE,
+    private: true,
+    exect: false,
+    path: '/class-routine',
+    component: ClassRoutine,
     layout: AdminLayout,
   },
 ];
@@ -243,6 +269,14 @@ export const Routes = [
     exact: false,
     path: '/settings/payment',
     component: SettingPayment,
+    layout: AdminLayout,
+  },
+  {
+    slug: SCHOOL_SELECT_PAGE,
+    private: true,
+    exact: false,
+    path: '/school/select',
+    component: SettingSchoolChoice,
     layout: AdminLayout,
   },
   ...academicRouting,

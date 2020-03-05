@@ -173,19 +173,6 @@ class ClassesList extends React.Component {
                 columns={columns}
                 isLoading={isLoading}
                 editable={{
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve, reject) => {
-                      updateClass(newData).then(
-                        () => {
-                          resolve({
-                            data: newData,
-                          });
-                        },
-                        () => {
-                          reject();
-                        }
-                      );
-                    }),
                   onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
                       removeClass(oldData.id).then(() => {
@@ -198,6 +185,11 @@ class ClassesList extends React.Component {
                   {
                     icon: 'edit',
                     tooltip: 'Save User',
+                    onClick: this.editRecordHandle,
+                  },
+                  {
+                    icon: 'add',
+                    tooltip: 'Dodaj uczniów do klasy',
                     onClick: this.editRecordHandle,
                   },
                 ]}

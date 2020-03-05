@@ -9,7 +9,7 @@ export class ClassesSelect extends PureComponent {
       loading,
       onChange,
       value = {},
-      placeholder = 'Wybierz...',
+      placeholder = 'Wybierz klasę...',
     } = this.props;
 
     const classesOptions =

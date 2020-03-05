@@ -62,7 +62,7 @@ class StudentDetails extends React.Component {
                     <Table aria-label="simple table">
                       <TableBody>
                         {rows.map(row => (
-                          <TableRow key={row.value}>
+                          <TableRow key={row.key}>
                             <TableCell component="th" scope="row">
                               {row.key}
                             </TableCell>

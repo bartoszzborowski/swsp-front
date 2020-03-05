@@ -9,7 +9,7 @@ export class SessionSelect extends PureComponent {
       loading,
       onChange,
       value = {},
-      placeholder = 'Wybierz...',
+      placeholder = 'Wybierz sesję...',
     } = this.props;
 
     const sessionsOption =

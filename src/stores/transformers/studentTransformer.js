@@ -7,7 +7,7 @@ import {
 
 export const transform = (data, pagination) => {
   const serializedData = data.map(item => {
-    const { user, parent, classes, session, subject } = item;
+    const { user, parent, classes, session, subject, section } = item;
     const { user: userFromParent = {} } = getValue(parent, {});
     const { id: parentId } = getValue(parent, {});
     const parentUser = getValue(userFromParent, {});
@@ -15,6 +15,7 @@ export const transform = (data, pagination) => {
     const studentClasses = getValue(classes, {});
     const studentSession = getValue(session, {});
     const studentSubject = getValue(subject, {});
+    const studentSection = getValue(section, {});
 
     return {
       id: getValue(item.id),
@@ -31,6 +32,8 @@ export const transform = (data, pagination) => {
       sessionName: getValue(studentSession.name),
       subjectId: getValue(studentSubject.id),
       subjectName: getValue(studentSubject.name),
+      sectionId: getValue(studentSection.id),
+      sectionName: getValue(studentSection.name),
     };
   });
 
@@ -69,8 +72,9 @@ export const transformToUpdate = data => {
     parent_id: getValue(data.parentId, undefined),
     marital: getValue(data.marital, undefined),
     role: getValue(data.role, undefined),
-    school_id: getValue(data.schoolId, getCurrentSchool),
+    school_id: getCurrentSchool(),
     session_id: getValue(data.sessionId, undefined),
     subject_id: getValue(data.subjectId, undefined),
+    section_id: getValue(data.sectionId, undefined),
   });
 };

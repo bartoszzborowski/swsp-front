@@ -1,4 +1,4 @@
-import { filterUndefined, getValue } from 'helpers';
+import { filterUndefined, getCurrentSchool, getValue } from 'helpers';
 
 export const transform = data => {
   return data.map(item => {
@@ -15,5 +15,6 @@ export const transformToSave = data => {
   return filterUndefined({
     id: getValue(data.id),
     name: getValue(data.name),
+    school_id: getCurrentSchool(),
   });
 };

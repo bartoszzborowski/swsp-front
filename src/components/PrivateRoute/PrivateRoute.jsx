@@ -11,11 +11,24 @@ export const PrivateRoute = ({
     {...rest}
     render={props => {
       const currentUser = localStorage.getItem('user');
+      const isSelectSchool = localStorage.getItem('schoolId');
+      const isRedirect = localStorage.getItem('schoolRedirect');
+
       if (!currentUser) {
         // not logged in so redirect to login page with the return url
         return (
           <Redirect
             to={{ pathname: '/login', state: { from: props.location } }}
+          />
+        );
+      }
+
+      if (!isSelectSchool && !isRedirect) {
+        localStorage.setItem('schoolRedirect', 'true');
+        // not logged in so redirect to login page with the return url
+        return (
+          <Redirect
+            to={{ pathname: '/school/select', state: { from: props.location } }}
           />
         );
       }

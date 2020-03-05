@@ -1,7 +1,7 @@
-import { getValue } from 'helpers';
+import { getValue, wrapPaginate } from 'helpers';
 
-export const transform = data => {
-  return data.map(item => {
+export const transform = (data, pagination) => {
+  const serializedData = data.map(item => {
     const sanitizeItem = getValue(item, {});
     const sanitizeUser = getValue(sanitizeItem.user, {});
     return {
@@ -11,4 +11,8 @@ export const transform = data => {
       schoolId: getValue(sanitizeUser.school_id),
     };
   });
+
+  if (pagination) {
+    return wrapPaginate(serializedData, pagination);
+  }
 };

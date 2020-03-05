@@ -1,4 +1,9 @@
-import { filterUndefined, getValue, wrapPaginate } from 'helpers';
+import {
+  filterUndefined,
+  getCurrentSchool,
+  getValue,
+  wrapPaginate,
+} from 'helpers';
 
 export const transform = (data, pagination) => {
   return wrapPaginate(
@@ -37,5 +42,6 @@ export const transformToSave = data => {
     marital: getValue(data.marital, undefined),
     role: getValue(data.role, undefined),
     password: getValue(data.password, undefined),
+    school_id: getCurrentSchool(),
   });
 };

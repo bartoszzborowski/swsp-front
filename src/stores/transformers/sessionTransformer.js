@@ -1,4 +1,4 @@
-import { getValue, filterUndefined } from 'helpers';
+import { getValue, filterUndefined, getCurrentSchool } from 'helpers';
 
 export const transform = data => {
   return data.map(item => {
@@ -18,7 +18,7 @@ export const transformToUpdate = (data = {}) => {
     id: getValue(data.id, null),
     name: getValue(data.name, undefined),
     status: getValue(data.status, undefined),
-    school_id: getValue(data.schoolId, undefined),
+    school_id: getCurrentSchool(),
   });
 };
 
@@ -26,6 +26,6 @@ export const transformToCreate = (data = {}) => {
   return filterUndefined({
     name: getValue(data.session, undefined),
     status: getValue(data.status, undefined),
-    school_id: getValue(data.schoolId, undefined),
+    school_id: getCurrentSchool(),
   });
 };

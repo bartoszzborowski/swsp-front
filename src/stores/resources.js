@@ -8,6 +8,8 @@ export const resourceName = {
   exams: 'exams',
   routines: 'routines',
   sections: 'sections',
+  schools: 'schools',
+  teachers: 'teachers',
 };
 
 export default [
@@ -37,5 +39,11 @@ export default [
   },
   {
     name: resourceName.sections,
+  },
+  {
+    name: resourceName.schools,
+  },
+  {
+    name: resourceName.teachers,
   },
 ];

@@ -6,6 +6,7 @@ import {
 } from 'stores/transformers/studentTransformer';
 import head from 'lodash/head';
 import { handleResponse } from 'helpers';
+import { fragments } from './fragments';
 
 const studentService = {
   getAll,
@@ -14,75 +15,6 @@ const studentService = {
   remove,
   create,
   getByCustomFilters,
-};
-
-const fragments = {
-  user: gql`
-    fragment UserInfo on StudentType {
-      user {
-        id
-        email
-        name
-        last_name
-        address
-        phone
-        birthday
-        blood_group
-        gender
-        token
-      }
-    }
-  `,
-  classes: gql`
-    fragment ClassesInfo on StudentType {
-      classes {
-        id
-        name
-      }
-    }
-  `,
-  session: gql`
-    fragment SessionInfo on StudentType {
-      session {
-        id
-        name
-        status
-        school_id
-      }
-    }
-  `,
-  parent: gql`
-    fragment ParentInfo on StudentType {
-      parent {
-        id
-        ...ParentInfoUser
-      }
-    }
-  `,
-  subject: gql`
-    fragment SubjectInfo on StudentType {
-      subject {
-        id
-        name
-      }
-    }
-  `,
-  userParent: gql`
-    fragment ParentInfoUser on ParentType {
-      user {
-        id
-        email
-        name
-        last_name
-        address
-        phone
-        birthday
-        blood_group
-        gender
-        token
-      }
-    }
-  `,
 };
 
 function getAll(perPage = 100, page = 1) {
@@ -96,6 +28,7 @@ function getAll(perPage = 100, page = 1) {
           ...ClassesInfo
           ...SessionInfo
           ...SubjectInfo
+          ...SectionInfo
         }
         per_page
         last_page
@@ -109,6 +42,7 @@ function getAll(perPage = 100, page = 1) {
     ${fragments.session}
     ${fragments.userParent}
     ${fragments.subject}
+    ${fragments.section}
   `;
 
   return getClient()
@@ -134,6 +68,7 @@ function getById(id) {
           ...ClassesInfo
           ...SessionInfo
           ...SubjectInfo
+          ...SectionInfo
         }
         per_page
         last_page
@@ -147,6 +82,7 @@ function getById(id) {
     ${fragments.session}
     ${fragments.userParent}
     ${fragments.subject}
+    ${fragments.section}
   `;
 
   return getClient()
@@ -173,6 +109,7 @@ function getByCustomFilters(customFilters = {}, take = 100, page = 1) {
           ...ClassesInfo
           ...SessionInfo
           ...SubjectInfo
+          ...SectionInfo
         }
         per_page
         last_page
@@ -186,6 +123,7 @@ function getByCustomFilters(customFilters = {}, take = 100, page = 1) {
     ${fragments.session}
     ${fragments.userParent}
     ${fragments.subject}
+    ${fragments.section}
   `;
 
   return getClient()
@@ -210,6 +148,7 @@ function create(student) {
         ...ClassesInfo
         ...SessionInfo
         ...SubjectInfo
+        ...SectionInfo
       }
     }
     ${fragments.user}
@@ -218,6 +157,7 @@ function create(student) {
     ${fragments.session}
     ${fragments.userParent}
     ${fragments.subject}
+    ${fragments.section}
   `;
   const sanitizeStudent = transformToUpdate(student);
 
@@ -246,6 +186,7 @@ function update(student) {
         ...ClassesInfo
         ...SessionInfo
         ...SubjectInfo
+        ...SectionInfo
       }
     }
     ${fragments.user}
@@ -254,6 +195,7 @@ function update(student) {
     ${fragments.session}
     ${fragments.userParent}
     ${fragments.subject}
+    ${fragments.section}
   `;
   const sanitizeStudent = transformToUpdate(student);
 

@@ -18,12 +18,14 @@ const services = {
   [resourceName.subject]: require('services/subject.service'),
   [resourceName.attendance]: require('services/attendance.service'),
   [resourceName.sections]: require('services/sections.service'),
+  [resourceName.schools]: require('services/school.service'),
+  [resourceName.teachers]: require('services/teacher.service'),
 };
 
-export const getList = scope => () => {
+export const getList = scope => filters => {
   return dispatch => {
     dispatch(getAllAction.request({}, scope));
-    services[scope].default.getAll().then(
+    services[scope].default.getAll(filters).then(
       data => {
         dispatch(getAllAction.success(data, scope));
       },

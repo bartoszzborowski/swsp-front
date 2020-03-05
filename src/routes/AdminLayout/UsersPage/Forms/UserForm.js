@@ -12,8 +12,8 @@ export const UserForm = props => {
 
   const rolesOption = rolesTable.map(item => {
     return {
-      value: item,
-      label: item,
+      value: item.value,
+      label: item.label,
     };
   });
   const { male, female } = gender;

@@ -1,3 +1,3 @@
 export const getCurrentSchool = () => {
-  return 1;
+  return localStorage.getItem('schoolId');
 };

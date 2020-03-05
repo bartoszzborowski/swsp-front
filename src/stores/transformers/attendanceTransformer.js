@@ -1,4 +1,9 @@
-import { filterUndefined, getValue, wrapPaginate } from 'helpers';
+import {
+  filterUndefined,
+  getCurrentSchool,
+  getValue,
+  wrapPaginate,
+} from 'helpers';
 
 export const fields = {
   id: 'id',
@@ -41,7 +46,7 @@ export const transformToSave = data => {
       student_id: getValue(item[fields.studentId], undefined),
       subject_id: getValue(item[fields.subjectId], undefined),
       session_id: getValue(item[fields.sessionId], undefined),
-      school_id: getValue(item[fields.schoolId], undefined),
+      school_id: getCurrentSchool(),
       section_id: getValue(item[fields.sectionId], undefined),
     });
   });

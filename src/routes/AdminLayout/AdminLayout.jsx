@@ -22,11 +22,14 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import style from './AdminLayout.module.scss';
 import {
+  CLASS_ROOM_LIST_PAGE,
+  CLASS_ROUTINE,
   CLASSES_LIST_PAGE,
   CLASSES_PAGE,
   CLASSES_SECTION_LIST_PAGE,
   getLink,
   LOGIN_PAGE,
+  SCHOOL_SELECT_PAGE,
   SETTINGS_PAGE,
   SETTINGS_PAGE_GENERAL,
   SETTINGS_PAGE_MAIL,
@@ -42,6 +45,10 @@ import {
 } from 'config/routes';
 import SidebarNav from './components/SidebarNav/SidebarNav';
 import Notifier from 'helpers/notifier';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import TextFieldSelectCustom from './components/TextFieldSelectCustom/TextFieldSelectCustom';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
 
 class AdminLayout extends React.Component {
   constructor(props) {
@@ -117,6 +124,14 @@ class AdminLayout extends React.Component {
             title: 'Przedmioty szkolne',
             href: getLink(SUBJECT_LIST_PAGE),
           },
+          {
+            title: 'Sale szkolne',
+            href: getLink(CLASS_ROOM_LIST_PAGE),
+          },
+          {
+            title: 'Plan zajęc',
+            href: getLink(CLASS_ROUTINE),
+          },
         ],
       },
       // {
@@ -150,6 +165,10 @@ class AdminLayout extends React.Component {
         icon: <SettingsIcon />,
         nested: [
           {
+            title: 'Wybierz szkołę',
+            href: getLink(SCHOOL_SELECT_PAGE),
+          },
+          {
             title: 'General Settings',
             href: getLink(SETTINGS_PAGE_GENERAL),
           },
@@ -166,6 +185,16 @@ class AdminLayout extends React.Component {
             href: getLink(SETTINGS_PAGE_PAYMENT),
           },
         ],
+      },
+    ];
+    const maritalStatus = [
+      {
+        value: '1',
+        label: 'Małżeństwo',
+      },
+      {
+        value: '2',
+        label: 'Wolny',
       },
     ];
     const { open } = this.state;
@@ -256,6 +285,25 @@ class AdminLayout extends React.Component {
           {/*    </ListItem>*/}
           {/*  ))}*/}
           {/*</List>*/}
+          {/*<div>*/}
+          {/*  <TextField*/}
+          {/*    id="standard-select-currency"*/}
+          {/*    select*/}
+          {/*    margin="normal"*/}
+          {/*    variant="outlined"*/}
+          {/*    size="small"*/}
+          {/*    fullWidth*/}
+          {/*    label="Wybierz szkołę"*/}
+          {/*    value={'dupa'}*/}
+          {/*    helperText="Please select your currency"*/}
+          {/*  >*/}
+          {/*    {maritalStatus.map(option => (*/}
+          {/*      <MenuItem key={option.value} value={option.value}>*/}
+          {/*        {option.label}*/}
+          {/*      </MenuItem>*/}
+          {/*    ))}*/}
+          {/*  </TextField>*/}
+          {/*</div>*/}
         </Drawer>
         <main
           className={clsx(style.content, {

@@ -1,8 +1,9 @@
 export const roles = {
-  admin: 'admin',
-  user: 'user',
-  parent: 'parent',
-  student: 'student',
+  admin: { value: 'admin', label: 'Admin' },
+  user: { value: 'user', label: 'Użytkownik' },
+  parent: { value: 'parent', label: 'Rodzic' },
+  student: { value: 'student', label: 'Student' },
+  teacher: { value: 'teacher', label: 'Nauczyciel' },
 };
 
 export const rolesTable = [
@@ -10,4 +11,5 @@ export const rolesTable = [
   roles.user,
   roles.parent,
   roles.student,
+  roles.teacher,
 ];

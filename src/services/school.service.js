@@ -4,10 +4,10 @@ import { handleResponse } from 'helpers';
 import {
   transform,
   transformToSave,
-} from '../stores/transformers/sectionsTransformer';
+} from '../stores/transformers/schoolTransformer';
 import head from 'lodash/head';
 
-const sectionsService = {
+const schoolService = {
   create,
   update,
   remove,
@@ -16,29 +16,24 @@ const sectionsService = {
 };
 
 const fragments = {
-  section: gql`
-    fragment SectionInfo on SectionType {
+  schools: gql`
+    fragment SchoolInfo on SchoolType {
       id
       name
-      class_id
-      school_id
     }
   `,
 };
 
 function getAll(customFilters = {}) {
   const QUERY = gql`
-    query($take: Int!, $page: Int!, $filters: FiltersSectionInputType) {
-      classSections(
-        pagination: { take: $take, page: $page }
-        filters: $filters
-      ) {
+    query($take: Int!, $page: Int!, $filters: FiltersInputType) {
+      schools(pagination: { take: $take, page: $page }, filters: $filters) {
         data {
-          ...SectionInfo
+          ...SchoolInfo
         }
       }
     }
-    ${fragments.section}
+    ${fragments.schools}
   `;
 
   return getClient()
@@ -49,10 +44,10 @@ function getAll(customFilters = {}) {
     .then(handleResponse)
     .then(result => {
       const {
-        data: { classSections },
+        data: { schools },
       } = result;
-      const { data: SectionData } = classSections;
-      return transform(SectionData);
+      const { data: SchoolData } = schools;
+      return transform(SchoolData);
     });
 }
 
@@ -134,4 +129,4 @@ function remove(id) {
     });
 }
 
-export default sectionsService;
+export default schoolService;

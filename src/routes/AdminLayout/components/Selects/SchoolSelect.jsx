@@ -2,19 +2,19 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-export class SubjectSelect extends PureComponent {
+export class SchoolSelect extends PureComponent {
   render() {
     const {
-      subjects,
+      schools,
       loading,
       onChange,
       value = {},
-      placeholder = 'Wybierz zajęcia...',
+      placeholder = 'Wybierz szkołe...',
     } = this.props;
 
-    const subjectsOptions =
-      subjects &&
-      subjects.map(item => {
+    const classesOptions =
+      schools &&
+      schools.map(item => {
         return { value: item.id, label: item.name };
       });
 
@@ -23,7 +23,7 @@ export class SubjectSelect extends PureComponent {
         placeholder={placeholder}
         isLoading={loading}
         onChange={onChange}
-        options={subjectsOptions}
+        options={classesOptions}
       />
     );
 
@@ -35,8 +35,8 @@ export class SubjectSelect extends PureComponent {
   }
 }
 
-SubjectSelect.propTypes = {
-  subjects: PropTypes.array.isRequired,
+SchoolSelect.propTypes = {
+  schools: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   value: PropTypes.any,

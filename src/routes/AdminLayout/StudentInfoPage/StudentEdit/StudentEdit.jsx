@@ -2,6 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import {
   ClassesSelect,
+  SectionSelect,
   SessionSelect,
   SubjectSelect,
 } from 'routes/AdminLayout/components/Selects';
@@ -14,6 +15,7 @@ import { resourceName } from 'stores/resources';
 import { connect } from 'react-redux';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import { redirectTo, STUDENT_INFO_DETAILS_PAGE } from 'config/routes';
 
 class StudentEdit extends React.Component {
   constructor(props) {
@@ -23,6 +25,7 @@ class StudentEdit extends React.Component {
       session: null,
       subjects: null,
       classes: null,
+      sections: null,
     };
 
     this.searchAttendance = this.searchAttendance.bind(this);
@@ -36,18 +39,21 @@ class StudentEdit extends React.Component {
   }
 
   searchAttendance() {
-    const { classes, session, subjects } = this.state;
+    const { classes, session, subjects, sections } = this.state;
     const { student } = this.props;
     const dataToUpdate = {
       ...student,
       sessionId: session,
       classId: classes,
       subjectId: subjects,
+      sectionId: sections,
     };
-    console.log('dataToUpdate', dataToUpdate);
-    if (true) {
+
+    if (dataToUpdate) {
       const { updateStudent } = this.props;
-      updateStudent(dataToUpdate);
+      updateStudent(dataToUpdate).then(() => {
+        redirectTo(STUDENT_INFO_DETAILS_PAGE, [{ studentId: student.id }]);
+      });
     }
   }
 
@@ -56,6 +62,7 @@ class StudentEdit extends React.Component {
       getListClasses,
       getListSession,
       getListSubject,
+      getListSections,
       getOneStudent,
       match: {
         params: { studentId },
@@ -66,10 +73,11 @@ class StudentEdit extends React.Component {
     getListSubject();
     getListSession();
     getListClasses();
+    getListSections();
   }
 
   render() {
-    const { sessionLoading, sessions, classes, subjects, student } = this.props;
+    const { sessionLoading, sessions, classes, sections, student } = this.props;
 
     return (
       <>
@@ -102,14 +110,14 @@ class StudentEdit extends React.Component {
                   />
                 </Grid>
                 <Grid item lg={4} md={4} xl={4} xs={12}>
-                  <SubjectSelect
-                    placeholder="Wybierz przedmiot"
-                    subjects={subjects}
-                    onChange={this.onChangeSelect('subjects')}
+                  <SectionSelect
+                    placeholder="Wybierz sekcję"
+                    sections={sections}
+                    onChange={this.onChangeSelect('sections')}
                     loading={sessionLoading}
                     value={{
-                      value: student.subjectId,
-                      label: student.subjectName,
+                      value: student.sectionId,
+                      label: student.sectionName,
                     }}
                   />
                 </Grid>
@@ -139,6 +147,9 @@ const mapStateToProps = state => {
   const { items: classesItems = [], loading: classLoading } = state.classes;
   const { items: sessionItems = [], loading: sessionLoading } = state.session;
   const { items: subjectItems = [], loading: subjectLoading } = state.subject;
+  const { items: sectionItems = [], loading: sectionLoading } = state[
+    resourceName.sections
+  ];
   const { item: student = [], loading: studentLoading } = state.student;
 
   return {
@@ -146,14 +157,17 @@ const mapStateToProps = state => {
     sessionLoading,
     subjectLoading,
     studentLoading,
+    sectionLoading,
     student: getValue(student, {}),
     classes: getValue(classesItems, []),
     sessions: getValue(sessionItems, []),
     subjects: getValue(subjectItems, []),
+    sections: getValue(sectionItems, []),
   };
 };
 
 const actionCreators = {
+  getListSections: getList(resourceName.sections),
   getListClasses: getList(resourceName.classes),
   getListSession: getList(resourceName.session),
   getListSubject: getList(resourceName.subject),

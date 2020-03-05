@@ -84,7 +84,6 @@ class SubjectList extends React.Component {
                         label={'Przedmiot'}
                         props={props}
                       />
-                      )}
                       <Grid spacing={3} container>
                         <Grid item xs={12}>
                           <Box
@@ -136,13 +135,6 @@ class SubjectList extends React.Component {
                     }),
                 }}
                 data={subjects}
-                // actions={[
-                //   {
-                //     icon: 'edit',
-                //     tooltip: 'Save User',
-                //     onClick: this.editRecordHandle,
-                //   },
-                // ]}
                 options={{
                   actionsColumnIndex: columns.length,
                   exportButton: true,
