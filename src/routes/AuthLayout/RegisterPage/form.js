@@ -27,7 +27,7 @@ export const Form = props => {
         required
         fullWidth
         id="name"
-        label={'User name'}
+        label={'Imię'}
         helperText={errors.name}
         name="name"
         autoComplete="name"
@@ -42,7 +42,7 @@ export const Form = props => {
         required
         fullWidth
         id="email"
-        label={'Email'}
+        label={'Adres e-mail'}
         name="email"
         autoComplete="email"
         value={email}
@@ -57,7 +57,7 @@ export const Form = props => {
         required
         fullWidth
         id="password"
-        label={'Password'}
+        label={'Hasło'}
         name="password"
         autoComplete="current-password"
         onBlur={handleBlur}
@@ -71,12 +71,12 @@ export const Form = props => {
         variant="contained"
         color="primary"
       >
-        Sign up
+        Zarejestruj się
       </Button>
       <Grid container>
         <Grid item>
           <Link component={RouterLink} to={getLink(LOGIN_PAGE)} variant="body">
-            {'Sign in'}
+            {'Zaloguj się'}
           </Link>
         </Grid>
       </Grid>

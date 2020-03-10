@@ -21,12 +21,12 @@ class SettingsGeneralPage extends React.Component {
     return (
       <div>
         <Grid container spacing={4}>
-          <Grid item lg={8} md={6} xl={8} xs={12}>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
             <Card>
               <CardHeader
-                title={'General Settings'}
+                title={'Ustawienia ogólne'}
                 subheader={
-                  "Enter your school's details. This information will appear on reports, emails and receipts."
+                  'W tym miejscu znajdziesz wszystkie informacje dotyczące szkoły'
                 }
               />
               <CardContent>
@@ -36,14 +36,6 @@ class SettingsGeneralPage extends React.Component {
                   validationSchema={validationSchema}
                   render={props => <GeneralSettingForm {...props} />}
                 />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item lg={4} md={6} xl={4} xs={12}>
-            <Card>
-              <CardHeader title={'Upload Logo'} />
-              <CardContent>
-                <Avatar src={'https://source.unsplash.com/random'} />
               </CardContent>
             </Card>
           </Grid>

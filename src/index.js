@@ -5,6 +5,7 @@ import { App } from './App';
 import { Provider } from 'react-redux';
 import { store } from 'stores';
 import 'typeface-roboto';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { StylesProvider } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
 import * as serviceWorker from './serviceWorker';

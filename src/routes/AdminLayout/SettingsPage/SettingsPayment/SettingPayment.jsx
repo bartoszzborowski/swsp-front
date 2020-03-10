@@ -20,9 +20,9 @@ class SettingPayment extends React.Component {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Card>
               <CardHeader
-                title={'Payment Settings'}
+                title={'Ustawienia płatności'}
                 subheader={
-                  "Enter your school's details. This information will appear on reports, emails and receipts."
+                  'W tym miejscu możesz skonfigurować swoich pośredników płatności'
                 }
               />
               <CardContent>

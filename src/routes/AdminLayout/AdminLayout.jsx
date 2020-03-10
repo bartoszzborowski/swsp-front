@@ -73,32 +73,32 @@ class AdminLayout extends React.Component {
   render() {
     const pages = [
       {
-        title: 'Dashboard',
+        title: 'Strona Główna',
         href: '/dashboard',
         icon: <DashboardIcon />,
       },
       {
-        title: 'Users',
+        title: 'Użytkownicy',
         href: getLink(USERS_PAGE),
         icon: <PeopleIcon />,
         nested: [
           {
-            title: 'User List',
+            title: 'List użytkowników',
             href: getLink(USER_INFO_LIST_PAGE),
           },
           {
-            title: 'User Create',
+            title: 'Dodaj użytkownika',
             href: getLink(USER_INFO_CREATE_PAGE),
           },
         ],
       },
       {
-        title: 'Student info',
+        title: 'Informacje o uczniach',
         href: getLink(STUDENT_INFO_PAGE),
         icon: <PeopleIcon />,
         nested: [
           {
-            title: 'Student list',
+            title: 'Lista uczniów',
             href: getLink(STUDENT_INFO_LIST_PAGE),
           },
           {
@@ -108,7 +108,7 @@ class AdminLayout extends React.Component {
         ],
       },
       {
-        title: 'Akademia',
+        title: 'Zarządzaj szkoła',
         href: getLink(CLASSES_PAGE),
         icon: <PeopleIcon />,
         nested: [
@@ -160,7 +160,7 @@ class AdminLayout extends React.Component {
       //   icon: <AccountBoxIcon />,
       // },
       {
-        title: 'Settings',
+        title: 'Ustawienia',
         href: getLink(SETTINGS_PAGE),
         icon: <SettingsIcon />,
         nested: [
@@ -169,19 +169,19 @@ class AdminLayout extends React.Component {
             href: getLink(SCHOOL_SELECT_PAGE),
           },
           {
-            title: 'General Settings',
+            title: 'Ustawienia ogólne',
             href: getLink(SETTINGS_PAGE_GENERAL),
           },
           {
-            title: 'Session',
+            title: 'Sesje szkolne',
             href: getLink(SETTINGS_PAGE_SESSION),
           },
           {
-            title: 'Email Settings',
+            title: 'Ustawienia Email',
             href: getLink(SETTINGS_PAGE_MAIL),
           },
           {
-            title: 'Payment Settings',
+            title: 'Ustawienia płatności',
             href: getLink(SETTINGS_PAGE_PAYMENT),
           },
         ],

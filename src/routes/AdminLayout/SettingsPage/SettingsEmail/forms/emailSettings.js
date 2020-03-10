@@ -35,12 +35,13 @@ export const EmailSettings = props => {
             style={{ marginLeft: '6px', marginRight: '6px' }}
             id="outlined-select-currency"
             select
-            label="Mail driver"
+            label="Klient"
             value={driver}
             onChange={handleChange}
             margin="normal"
             variant="outlined"
             fullWidth
+            size="small"
           >
             {mailDriver.map(option => (
               <MenuItem key={option.value} value={option.value}>
@@ -48,25 +49,18 @@ export const EmailSettings = props => {
               </MenuItem>
             ))}
           </TextField>
+          <TextFieldCustom label={'Port'} name={'mailPort'} props={props} />
           <TextFieldCustom
-            label={'Mail Port'}
+            label={'Hasło'}
+            password
             name={'mailPort'}
-            props={props}
-          />
-          <TextFieldCustom
-            label={'Mail Port'}
-            name={'mailPassword'}
             props={props}
           />
         </Grid>
         <Grid item lg={6} md={6} xl={6} xs={12}>
+          <TextFieldCustom label={'Host'} name={'mailHost'} props={props} />
           <TextFieldCustom
-            label={'Mail host'}
-            name={'mailHost'}
-            props={props}
-          />
-          <TextFieldCustom
-            label={'Mail username'}
+            label={'Użytkownik'}
             name={'mailUsername'}
             props={props}
           />

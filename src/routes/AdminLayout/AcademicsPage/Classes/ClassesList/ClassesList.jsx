@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import { CardHeader } from '@material-ui/core';
@@ -15,17 +15,35 @@ import { resourceName } from 'stores/resources';
 import { connect } from 'react-redux';
 import CheckboxGroup from 'routes/AdminLayout/components/CheckboxGroup/CheckboxGroup';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import AddUsersToClass from './AddUsersToClass';
+import { SectionSelect } from '../../../components/Selects';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Typography from '@material-ui/core/Typography';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import searchService from '../../../../../services/search.service';
 
-class ClassesList extends React.Component {
+class ClassesList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       currentClass: {},
       checkbox: [],
+      open: false,
+      userList: [],
     };
 
     this.onChange = this.onChange.bind(this);
     this.editRecordHandle = this.editRecordHandle.bind(this);
+    // this.openModal = this.openModal.bind(this);
   }
 
   componentDidMount() {
@@ -52,7 +70,7 @@ class ClassesList extends React.Component {
       removeClass,
       updateClass,
     } = this.props;
-    const { currentClass, checkbox = [] } = this.state;
+    const { currentClass, checkbox = [], open } = this.state;
 
     const initialValues = currentClass.name
       ? { classes: currentClass.name }
@@ -85,8 +103,94 @@ class ClassesList extends React.Component {
         currentClass.sections.map(item => item.id)) ||
       [];
 
+    const promiseOptions = inputValue =>
+      new Promise(resolve => {
+        searchService.search(inputValue, 'parents').then(result => {
+          resolve(result);
+        });
+      });
+
     return (
       <div>
+        <AddUsersToClass
+          setClick={click => (this.toggleModal = click)}
+          open={open}
+          submit={() => {
+            console.log('submiting');
+          }}
+        >
+          {props => {
+            return (
+              <div>
+                <Grid container spacing={4}>
+                  <Grid item md={6} xs={12} style={{ minHeight: '100px' }}>
+                    <SectionSelect
+                      sections={currentClass.sections}
+                      onChange={value => {
+                        console.log('onChange', value);
+                      }}
+                    />
+                    <AsyncSelect
+                      onChange={result => props.onChange(result.value)}
+                      cacheOptions
+                      loadOptions={promiseOptions}
+                      defaultOptions="true"
+                    />
+                    {/*<div*/}
+                    {/*  onClick={() => {*/}
+                    {/*    props.toggleModal();*/}
+                    {/*    this.setState({ open: false });*/}
+                    {/*  }}*/}
+                    {/*>*/}
+                    {/*  Close*/}
+                    {/*</div>*/}
+                  </Grid>
+                  <Grid xs={12}>
+                    <div>
+                      <Typography
+                        style={{ paddingLeft: '10px' }}
+                        variant="h5"
+                        component="h5"
+                      >
+                        Lista użytkowników
+                      </Typography>
+                      <List>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <AccountCircleIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary="Single-line item" />
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="delete">
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      </List>
+                      <List>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <AccountCircleIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary="Single-line item" />
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="delete">
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      </List>
+                    </div>
+                  </Grid>
+                </Grid>
+              </div>
+            );
+          }}
+        </AddUsersToClass>
         <Grid container spacing={4}>
           <Grid item lg={4} md={6} xl={4} xs={12}>
             <Card>
@@ -190,7 +294,10 @@ class ClassesList extends React.Component {
                   {
                     icon: 'add',
                     tooltip: 'Dodaj uczniów do klasy',
-                    onClick: this.editRecordHandle,
+                    onClick: (event, rowData) => {
+                      this.editRecordHandle(event, rowData);
+                      this.toggleModal();
+                    },
                   },
                 ]}
                 options={{

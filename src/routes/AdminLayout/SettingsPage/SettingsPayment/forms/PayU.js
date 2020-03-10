@@ -19,17 +19,17 @@ export const PayU = props => {
       <Grid container spacing={4}>
         <Grid item lg={12} md={12} xl={12} xs={12}>
           <TextFieldCustom
-            label={'Gateway Username'}
+            label={'Użytkownik'}
             name={'gatewayUsername'}
             props={props}
           />
           <TextFieldCustom
-            label={'Gateway Client Id'}
+            label={'Identyfikator klienta'}
             name={'gatewayClientId'}
             props={props}
           />
           <TextFieldCustom
-            label={'Gateway Secret Key'}
+            label={'Tajny klucz'}
             name={'gatewaySecretKey'}
             props={props}
           />
@@ -42,7 +42,7 @@ export const PayU = props => {
         variant="contained"
         color="primary"
       >
-        Save
+        Zapisz
       </GradientButton>
     </form>
   );

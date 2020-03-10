@@ -23,27 +23,23 @@ export const PayPal = props => {
       <Grid container spacing={4}>
         <Grid item lg={12} md={12} xl={12} xs={12}>
           <TextFieldCustom
-            label={'Gateway Username'}
+            label={'Użytkownik'}
             name={'gatewayUsername'}
             props={props}
           />
           <TextFieldCustom
-            label={'Gateway Password'}
+            label={'Hasło'}
             name={'gatewayPassword'}
             props={props}
           />
           <TextFieldCustom
-            label={'Gateway Client Id'}
+            label={'Identyfikator klienta'}
             name={'gatewayClientId'}
             props={props}
           />
+          <TextFieldCustom label={'Tryb'} name={'gatewayMode'} props={props} />
           <TextFieldCustom
-            label={'Gateway Mode'}
-            name={'gatewayMode'}
-            props={props}
-          />
-          <TextFieldCustom
-            label={'Gateway Secret Key'}
+            label={'Tajny klucz'}
             name={'gatewaySecretKey'}
             props={props}
           />
@@ -56,7 +52,7 @@ export const PayPal = props => {
         variant="contained"
         color="primary"
       >
-        Save
+        Zapisz
       </GradientButton>
     </form>
   );

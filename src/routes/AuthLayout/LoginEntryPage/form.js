@@ -29,10 +29,10 @@ export const Form = props => {
         required
         fullWidth
         id="email"
-        label={'Email'}
+        label={'Adres e-mail'}
         name="email"
         autoComplete="email"
-        autoFocus
+        // autoFocus
         value={email}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -45,7 +45,7 @@ export const Form = props => {
         required
         fullWidth
         id="password"
-        label={'Password'}
+        label={'Hasło'}
         name="password"
         autoComplete="current-password"
         onBlur={handleBlur}
@@ -54,7 +54,7 @@ export const Form = props => {
       />
       <FormControlLabel
         control={<Checkbox value="remember" color="primary" />}
-        label="Remember Mi"
+        label="Zapamiętaj mnie"
       />
       <Button
         disabled={!isValid}
@@ -63,12 +63,12 @@ export const Form = props => {
         variant="contained"
         color="primary"
       >
-        Sign in
+        Zaloguj sie
       </Button>
       <Grid container>
         <Grid item xs>
           <Link href="#" variant="body2">
-            Forgot password?
+            Zapomniałeś hasła?
           </Link>
         </Grid>
         <Grid item>
@@ -77,7 +77,7 @@ export const Form = props => {
             to={getLink(REGISTER_PAGE)}
             variant="body"
           >
-            {"Don't have an account? Sign Up"}
+            {'Nie posiadasz konta? Zarejestruj się'}
           </Link>
         </Grid>
       </Grid>

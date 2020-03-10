@@ -59,10 +59,9 @@ class SettingsSessionList extends React.Component {
                 >
                   {props => (
                     <Form>
-                      <MaskedSessionInput />
                       <TextFieldCustom
                         name={'session'}
-                        label={'Session'}
+                        label={'Sesja'}
                         props={props}
                       />
                       <Grid spacing={3} container>
