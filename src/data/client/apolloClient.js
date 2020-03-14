@@ -23,6 +23,7 @@ const config = {
   cache: new InMemoryCache({ addTypename: false }),
   link,
   defaultOptions,
+  connectToDevTools: true,
 };
 
 export const client = new ApolloClient(config);
@@ -43,6 +44,7 @@ export const getClient = token => {
     link,
     cache: new InMemoryCache({ addTypename: true }),
     defaultOptions,
+    connectToDevTools: true,
   };
 
   return new ApolloClient(config);

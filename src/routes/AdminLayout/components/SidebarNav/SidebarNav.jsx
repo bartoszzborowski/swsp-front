@@ -23,12 +23,20 @@ const SidebarNav = props => {
       },
     },
   });
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   return (
     <ThemeProvider theme={theme}>
       <List {...rest} className={className}>
-        {pages.map(page =>
-          page.nested ? (
+        {pages.map(page => {
+          const { roles } = page;
+          const isHaveAccess = roles && roles.indexOf(currentUser.roles) !== -1;
+
+          if (!isHaveAccess) {
+            return null;
+          }
+
+          return page.nested ? (
             <SidebarNavNested
               key={`nested-sidebar-${page.title}`}
               nestedPage={page}
@@ -55,8 +63,8 @@ const SidebarNav = props => {
                 />
               </Button>
             </ListItem>
-          )
-        )}
+          );
+        })}
       </List>
     </ThemeProvider>
   );

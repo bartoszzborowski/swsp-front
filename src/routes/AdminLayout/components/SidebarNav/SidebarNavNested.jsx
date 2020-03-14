@@ -20,7 +20,7 @@ const SidebarNavNested = props => {
   const handleClick = () => {
     setOpen(!open);
   };
-
+  const currentUser = JSON.parse(localStorage.getItem('user'));
   return (
     <>
       <ListItem
@@ -42,26 +42,35 @@ const SidebarNavNested = props => {
       </ListItem>
       <Collapse in={open} component="li" timeout="auto" unmountOnExit>
         <List disablePadding>
-          {nested.map(page => (
-            <ListItem
-              className={style.item}
-              selected={page.href === path}
-              disableGutters
-              key={page.title}
-            >
-              <Button
-                className={clsx(style.button, style.nested)}
-                activeClassName={clsx({ [style.active]: page.href === path })}
-                component={RouterLink}
-                to={page.href}
+          {nested.map(page => {
+            const { roles } = page;
+            const isHaveAccess =
+              roles && roles.indexOf(currentUser.roles) !== -1;
+
+            if (!isHaveAccess) {
+              return null;
+            }
+            return (
+              <ListItem
+                className={style.item}
+                selected={page.href === path}
+                disableGutters
+                key={page.title}
               >
-                <ListItemText
-                  className={style.listItemText}
-                  primary={page.title}
-                />
-              </Button>
-            </ListItem>
-          ))}
+                <Button
+                  className={clsx(style.button, style.nested)}
+                  activeClassName={clsx({ [style.active]: page.href === path })}
+                  component={RouterLink}
+                  to={page.href}
+                >
+                  <ListItemText
+                    className={style.listItemText}
+                    primary={page.title}
+                  />
+                </Button>
+              </ListItem>
+            );
+          })}
         </List>
       </Collapse>
     </>

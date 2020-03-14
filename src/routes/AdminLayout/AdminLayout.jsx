@@ -29,6 +29,7 @@ import {
   CLASSES_SECTION_LIST_PAGE,
   getLink,
   LOGIN_PAGE,
+  redirectTo,
   SCHOOL_SELECT_PAGE,
   SETTINGS_PAGE,
   SETTINGS_PAGE_GENERAL,
@@ -36,6 +37,7 @@ import {
   SETTINGS_PAGE_PAYMENT,
   SETTINGS_PAGE_SESSION,
   STUDENT_ATTENDANCE,
+  STUDENT_INFO_DETAILS_PAGE,
   STUDENT_INFO_LIST_PAGE,
   STUDENT_INFO_PAGE,
   SUBJECT_LIST_PAGE,
@@ -45,10 +47,13 @@ import {
 } from 'config/routes';
 import SidebarNav from './components/SidebarNav/SidebarNav';
 import Notifier from 'helpers/notifier';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import TextFieldSelectCustom from './components/TextFieldSelectCustom/TextFieldSelectCustom';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
+import { roles } from '../../helpers/roles';
+import { connect } from 'react-redux';
+import { getList, getOne } from '../../stores/actions';
+import { resourceName } from '../../stores/resources';
+import { getCurrentUser, setCurrentUser } from 'helpers';
+import studentService from '../../services/student.service';
+import head from 'lodash/head';
 
 class AdminLayout extends React.Component {
   constructor(props) {
@@ -60,6 +65,21 @@ class AdminLayout extends React.Component {
 
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+  }
+
+  componentDidMount() {
+    const { getStudent } = this.props;
+    const currentUser = getCurrentUser();
+
+    studentService
+      .getByCustomFilters({ user_id: currentUser.id })
+      .then(result => {
+        const user = head(result.data);
+        setCurrentUser({
+          ...currentUser,
+          ...user,
+        });
+      });
   }
 
   handleDrawerClose() {
@@ -76,19 +96,23 @@ class AdminLayout extends React.Component {
         title: 'Strona Główna',
         href: '/dashboard',
         icon: <DashboardIcon />,
+        roles: [roles.admin.value, roles.student.value],
       },
       {
         title: 'Użytkownicy',
         href: getLink(USERS_PAGE),
         icon: <PeopleIcon />,
+        roles: [roles.admin.value],
         nested: [
           {
             title: 'List użytkowników',
             href: getLink(USER_INFO_LIST_PAGE),
+            roles: [roles.admin.value],
           },
           {
             title: 'Dodaj użytkownika',
             href: getLink(USER_INFO_CREATE_PAGE),
+            roles: [roles.admin.value],
           },
         ],
       },
@@ -96,14 +120,17 @@ class AdminLayout extends React.Component {
         title: 'Informacje o uczniach',
         href: getLink(STUDENT_INFO_PAGE),
         icon: <PeopleIcon />,
+        roles: [roles.admin.value, roles.student.value],
         nested: [
           {
             title: 'Lista uczniów',
             href: getLink(STUDENT_INFO_LIST_PAGE),
+            roles: [roles.admin.value, roles.student.value],
           },
           {
             title: 'Dziennik obecności',
             href: getLink(STUDENT_ATTENDANCE),
+            roles: [roles.admin.value, roles.student.value],
           },
         ],
       },
@@ -111,26 +138,32 @@ class AdminLayout extends React.Component {
         title: 'Zarządzaj szkoła',
         href: getLink(CLASSES_PAGE),
         icon: <PeopleIcon />,
+        roles: [roles.admin.value],
         nested: [
           {
             title: 'Klasy',
             href: getLink(CLASSES_LIST_PAGE),
+            roles: [roles.admin.value],
           },
           {
             title: 'Sekcje',
             href: getLink(CLASSES_SECTION_LIST_PAGE),
+            roles: [roles.admin.value],
           },
           {
             title: 'Przedmioty szkolne',
             href: getLink(SUBJECT_LIST_PAGE),
+            roles: [roles.admin.value],
           },
           {
             title: 'Sale szkolne',
             href: getLink(CLASS_ROOM_LIST_PAGE),
+            roles: [roles.admin.value],
           },
           {
-            title: 'Plan zajęc',
+            title: 'Plan zajęć',
             href: getLink(CLASS_ROUTINE),
+            roles: [roles.admin.value, roles.student.value],
           },
         ],
       },
@@ -163,26 +196,32 @@ class AdminLayout extends React.Component {
         title: 'Ustawienia',
         href: getLink(SETTINGS_PAGE),
         icon: <SettingsIcon />,
+        roles: [roles.admin.value],
         nested: [
           {
             title: 'Wybierz szkołę',
             href: getLink(SCHOOL_SELECT_PAGE),
+            roles: [roles.admin.value],
           },
           {
             title: 'Ustawienia ogólne',
             href: getLink(SETTINGS_PAGE_GENERAL),
+            roles: [roles.admin.value],
           },
           {
             title: 'Sesje szkolne',
             href: getLink(SETTINGS_PAGE_SESSION),
+            roles: [roles.admin.value],
           },
           {
             title: 'Ustawienia Email',
             href: getLink(SETTINGS_PAGE_MAIL),
+            roles: [roles.admin.value],
           },
           {
             title: 'Ustawienia płatności',
             href: getLink(SETTINGS_PAGE_PAYMENT),
+            roles: [roles.admin.value],
           },
         ],
       },
@@ -230,23 +269,36 @@ class AdminLayout extends React.Component {
                 </Typography>
               </Box>
               <Box>
-                <IconButton aria-label="show 4 new mails">
-                  <Badge badgeContent={4} color="secondary">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
+                {/*<IconButton aria-label="show 4 new mails">*/}
+                {/*  <Badge badgeContent={4} color="secondary">*/}
+                {/*    <MailIcon />*/}
+                {/*  </Badge>*/}
+                {/*</IconButton>*/}
                 <IconButton
                   aria-label="show 17 new notifications"
                   color="primary"
+                  style={{ color: 'white' }}
                 >
                   <Badge badgeContent={17} color="secondary">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
-                <IconButton color="primary">
+                <IconButton
+                  style={{ color: 'white' }}
+                  onClick={() =>
+                    redirectTo(STUDENT_INFO_DETAILS_PAGE, [
+                      { studentId: getCurrentUser().id },
+                    ])
+                  }
+                  color="primary"
+                >
                   <AccountCircle />
                 </IconButton>
-                <IconButton to={getLink(LOGIN_PAGE)} component={RouterLink}>
+                <IconButton
+                  style={{ color: 'white' }}
+                  to={getLink(LOGIN_PAGE)}
+                  component={RouterLink}
+                >
                   <InputIcon />
                 </IconButton>
               </Box>
@@ -274,36 +326,6 @@ class AdminLayout extends React.Component {
           </div>
           <Divider />
           <SidebarNav pages={pages} />
-          {/*<Divider />*/}
-          {/*<List>*/}
-          {/*  {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (*/}
-          {/*    <ListItem button key={text}>*/}
-          {/*      <ListItemIcon>*/}
-          {/*        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}*/}
-          {/*      </ListItemIcon>*/}
-          {/*      <ListItemText primary={text} />*/}
-          {/*    </ListItem>*/}
-          {/*  ))}*/}
-          {/*</List>*/}
-          {/*<div>*/}
-          {/*  <TextField*/}
-          {/*    id="standard-select-currency"*/}
-          {/*    select*/}
-          {/*    margin="normal"*/}
-          {/*    variant="outlined"*/}
-          {/*    size="small"*/}
-          {/*    fullWidth*/}
-          {/*    label="Wybierz szkołę"*/}
-          {/*    value={'dupa'}*/}
-          {/*    helperText="Please select your currency"*/}
-          {/*  >*/}
-          {/*    {maritalStatus.map(option => (*/}
-          {/*      <MenuItem key={option.value} value={option.value}>*/}
-          {/*        {option.label}*/}
-          {/*      </MenuItem>*/}
-          {/*    ))}*/}
-          {/*  </TextField>*/}
-          {/*</div>*/}
         </Drawer>
         <main
           className={clsx(style.content, {
@@ -318,4 +340,16 @@ class AdminLayout extends React.Component {
   }
 }
 
-export { AdminLayout };
+const mapStateToPProps = state => {
+  const { alert } = state;
+  return { alert };
+};
+
+const actionCreators = {
+  getStudent: getList(resourceName.student),
+};
+
+const connectedApp = connect(mapStateToPProps, actionCreators)(AdminLayout);
+export { connectedApp as App };
+
+export { connectedApp as AdminLayout };

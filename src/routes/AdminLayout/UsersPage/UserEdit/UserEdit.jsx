@@ -57,6 +57,7 @@ class UserEdit extends React.Component {
                     validationSchema={validationSchema}
                     render={props => (
                       <UserForm
+                        isUpdate
                         buttonLabel="Aktualizuj użytkownika"
                         {...props}
                       />
@@ -85,7 +86,6 @@ const validationSchema = Yup.object().shape({
   bloodGroup: Yup.string().required(),
   marital: Yup.string().required(),
   role: Yup.string().required(),
-  password: Yup.string().required(),
 });
 
 const mapStateToProps = state => {

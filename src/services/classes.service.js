@@ -12,6 +12,7 @@ const classesService = {
   getAll,
   update,
   create,
+  remove,
 };
 
 function getAll() {
@@ -78,6 +79,28 @@ function create(section) {
     });
 }
 
+function remove(id) {
+  const MUTATION = gql`
+    mutation($ids: [Int]) {
+      deleteClass(ids: $ids)
+    }
+  `;
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { ids: [id] },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { deleteClass },
+      } = result;
+
+      return { id, deleteClass };
+    });
+}
+
 function update(section) {
   const MUTATION = gql`
     mutation($input: UpdateClassInputType) {
@@ -102,10 +125,10 @@ function update(section) {
     .then(handleResponse)
     .then(result => {
       const {
-        data: { createClasses },
+        data: { updateClass },
       } = result;
 
-      return head(transform([createClasses]));
+      return head(transform([updateClass]));
     });
 }
 

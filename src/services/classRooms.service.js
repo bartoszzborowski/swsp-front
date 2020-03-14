@@ -2,27 +2,25 @@ import gql from 'graphql-tag';
 import { getClient } from 'data/client/apolloClient';
 import head from 'lodash/head';
 import { handleResponse } from 'helpers';
-import { classesFragment, sectionsFragment } from './fragments';
+import { fragments } from './fragments';
 import {
   transform,
   transformToSave,
-} from '../stores/transformers/classesTransformer';
+} from '../stores/transformers/roomTransformer';
 
 const classRoomsService = {
   getAll,
   update,
   create,
+  remove,
 };
 
 function getAll() {
   const QUERY = gql`
     query($take: Int!, $page: Int!) {
-      classes(pagination: { take: $take, page: $page }) {
+      rooms(pagination: { take: $take, page: $page }) {
         data {
-          ...ClassesInfo
-          sections {
-            ...SectionInfo
-          }
+          ...RoomInfo
         }
         per_page
         last_page
@@ -30,8 +28,7 @@ function getAll() {
         total
       }
     }
-    ${classesFragment.classes}
-    ${sectionsFragment.section}
+    ${fragments.rooms}
   `;
 
   return getClient()
@@ -39,29 +36,25 @@ function getAll() {
     .then(handleResponse)
     .then(result => {
       const {
-        data: { classes },
+        data: { rooms },
       } = result;
-      console.log('result', result);
-      const { data: ClassesData } = classes;
-      return transform(ClassesData);
+
+      const { data: data } = rooms;
+      return transform(data);
     });
 }
 
-function create(section) {
+function create(room) {
   const MUTATION = gql`
-    mutation($input: ClassInputType) {
-      createClass(input: $input) {
-        ...ClassesInfo
-        sections {
-          ...SectionInfo
-        }
+    mutation($input: RoomInputType) {
+      createRoom(input: $input) {
+        ...RoomInfo
       }
     }
-    ${classesFragment.classes}
-    ${sectionsFragment.section}
+    ${fragments.rooms}
   `;
 
-  const serializedSData = transformToSave(section);
+  const serializedSData = transformToSave(room);
 
   return getClient()
     .mutate({
@@ -71,28 +64,24 @@ function create(section) {
     .then(handleResponse)
     .then(result => {
       const {
-        data: { createClass },
+        data: { createRoom },
       } = result;
 
-      return head(transform([createClass]));
+      return head(transform([createRoom]));
     });
 }
 
-function update(section) {
+function update(room) {
   const MUTATION = gql`
-    mutation($input: UpdateClassInputType) {
-      updateClass(input: $input) {
-        ...ClassesInfo
-        sections {
-          ...SectionInfo
-        }
+    mutation($input: UpdateRoomInputType) {
+      updateRoom(input: $input) {
+        ...RoomInfo
       }
     }
-    ${classesFragment.classes}
-    ${sectionsFragment.section}
+    ${fragments.rooms}
   `;
 
-  const serializedSData = transformToSave(section);
+  const serializedSData = transformToSave(room);
 
   return getClient()
     .mutate({
@@ -102,10 +91,32 @@ function update(section) {
     .then(handleResponse)
     .then(result => {
       const {
-        data: { createClasses },
+        data: { updateRoom },
       } = result;
 
-      return head(transform([createClasses]));
+      return head(transform([updateRoom]));
+    });
+}
+
+function remove(id) {
+  const MUTATION = gql`
+    mutation($ids: [Int]) {
+      deleteRoom(ids: $ids)
+    }
+  `;
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { ids: [id] },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { deleteRoom },
+      } = result;
+
+      return { id, deleteRoom };
     });
 }
 

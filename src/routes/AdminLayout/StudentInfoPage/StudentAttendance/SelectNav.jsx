@@ -4,6 +4,7 @@ import {
   SessionSelect,
   ClassesSelect,
   SubjectSelect,
+  SectionSelect,
 } from 'routes/AdminLayout/components/Selects';
 import { DatePicker } from '@material-ui/pickers';
 import PropTypes from 'prop-types';
@@ -18,6 +19,7 @@ class SelectNav extends PureComponent {
       session: null,
       subjects: null,
       classes: null,
+      sections: null,
     };
 
     this.onChangeDatePicker = this.onChangeDatePicker.bind(this);
@@ -49,8 +51,8 @@ class SelectNav extends PureComponent {
   }
 
   render() {
-    const { sessions, classes, subjects, loading } = this.props;
-    console.log('props', this.props);
+    const { sessions, classes, sections, loading } = this.props;
+
     const { date } = this.state;
     return (
       <>
@@ -70,9 +72,9 @@ class SelectNav extends PureComponent {
             />
           </Grid>
           <Grid item lg={3} md={3} xl={3} xs={12}>
-            <SubjectSelect
-              subjects={subjects}
-              onChange={this.onChangeSelect('subjects')}
+            <SectionSelect
+              sections={sections}
+              onChange={this.onChangeSelect('sections')}
               loading={loading}
             />
           </Grid>
@@ -111,6 +113,7 @@ class SelectNav extends PureComponent {
 SelectNav.propTypes = {
   sessions: PropTypes.array.isRequired,
   classes: PropTypes.array.isRequired,
+  sections: PropTypes.array,
   subjects: PropTypes.array,
   loading: PropTypes.bool,
   onChange: PropTypes.func,

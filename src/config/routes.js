@@ -33,6 +33,7 @@ import { SubjectList } from 'routes/AdminLayout/AcademicsPage/Subject/SubjectLis
 import { ClassRoom } from 'routes/AdminLayout/AcademicsPage/ClassRoom/ClassRoom';
 import { ClassRoutine } from 'routes/AdminLayout/AcademicsPage/ClassRoutine/ClassRoutine';
 import { SettingSchoolChoice } from '../routes/AdminLayout/SettingsPage/SettingSchoolChoice/SettingSchoolChoice';
+import { roles } from '../helpers/roles';
 
 export const LOGIN_PAGE = 'login_page';
 export const REGISTER_PAGE = 'register_page';
@@ -99,6 +100,7 @@ const academicRouting = [
     path: '/classes/list',
     component: ClassesList,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: CLASSES_SECTION_LIST_PAGE,
@@ -107,6 +109,7 @@ const academicRouting = [
     path: '/section/list',
     component: SectionList,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: SUBJECT_LIST_PAGE,
@@ -115,6 +118,7 @@ const academicRouting = [
     path: '/subject/list',
     component: SubjectList,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: CLASS_ROOM_LIST_PAGE,
@@ -123,6 +127,7 @@ const academicRouting = [
     path: '/class-room/list',
     component: ClassRoom,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: CLASS_ROUTINE,
@@ -131,6 +136,7 @@ const academicRouting = [
     path: '/class-routine',
     component: ClassRoutine,
     layout: AdminLayout,
+    roles: [roles.admin.value, roles.student.value],
   },
 ];
 
@@ -142,6 +148,7 @@ export const Routes = [
     path: '/',
     component: HomePage,
     layout: AdminLayout,
+    roles: [roles.admin.value, roles.student.value],
   },
   {
     slug: LOGIN_PAGE,
@@ -150,6 +157,7 @@ export const Routes = [
     path: '/login',
     component: LoginPage,
     layout: AuthLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: REGISTER_PAGE,
@@ -158,6 +166,7 @@ export const Routes = [
     path: '/register',
     component: RegisterPage,
     layout: AuthLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: USERS_PAGE,
@@ -166,6 +175,7 @@ export const Routes = [
     path: '/users',
     component: UsersPage,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: USER_INFO_LIST_PAGE,
@@ -174,6 +184,7 @@ export const Routes = [
     path: '/users/list',
     component: UsersList,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: USER_INFO_CREATE_PAGE,
@@ -182,6 +193,7 @@ export const Routes = [
     path: '/users/create',
     component: UserCreate,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: USER_INFO_EDIT_PAGE,
@@ -190,6 +202,7 @@ export const Routes = [
     path: '/users/edit/:userId',
     component: UserEdit,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: STUDENT_INFO_DETAILS_PAGE,
@@ -198,6 +211,7 @@ export const Routes = [
     path: '/student/details/:studentId',
     component: StudentDetails,
     layout: AdminLayout,
+    roles: [roles.admin.value, roles.student.value],
   },
   {
     slug: STUDENT_INFO_LIST_PAGE,
@@ -206,6 +220,7 @@ export const Routes = [
     path: '/students/list',
     component: StudentList,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: STUDENT_INFO_CREATE_PAGE,
@@ -214,6 +229,7 @@ export const Routes = [
     path: '/students/create',
     component: StudentCreate,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: STUDENT_INFO_EDIT_PAGE,
@@ -222,6 +238,7 @@ export const Routes = [
     path: '/students/edit/:studentId',
     component: StudentEdit,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: STUDENT_ATTENDANCE,
@@ -230,6 +247,7 @@ export const Routes = [
     path: '/student-attendance',
     component: StudentAttendance,
     layout: AdminLayout,
+    roles: [roles.admin.value, roles.student.value],
   },
   {
     slug: SETTINGS_PAGE,
@@ -238,6 +256,7 @@ export const Routes = [
     path: '/settings',
     component: SettingsPage,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: SETTINGS_PAGE_GENERAL,
@@ -246,6 +265,7 @@ export const Routes = [
     path: '/settings/general',
     component: SettingsGeneralPage,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: SETTINGS_PAGE_SESSION,
@@ -254,6 +274,7 @@ export const Routes = [
     path: '/settings/session',
     component: SettingsSessionList,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: SETTINGS_PAGE_MAIL,
@@ -262,6 +283,7 @@ export const Routes = [
     path: '/settings/mail',
     component: SettingsEmail,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: SETTINGS_PAGE_PAYMENT,
@@ -270,6 +292,7 @@ export const Routes = [
     path: '/settings/payment',
     component: SettingPayment,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   {
     slug: SCHOOL_SELECT_PAGE,
@@ -278,6 +301,7 @@ export const Routes = [
     path: '/school/select',
     component: SettingSchoolChoice,
     layout: AdminLayout,
+    roles: [roles.admin.value],
   },
   ...academicRouting,
 ];

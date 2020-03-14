@@ -8,5 +8,5 @@ const loggerMiddleware = createLogger();
 
 export const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(thunkMiddleware, loggerMiddleware))
+  composeWithDevTools(applyMiddleware(thunkMiddleware))
 );

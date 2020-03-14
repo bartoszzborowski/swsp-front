@@ -10,6 +10,7 @@ export const resourceName = {
   sections: 'sections',
   schools: 'schools',
   teachers: 'teachers',
+  rooms: 'rooms',
 };
 
 export default [
@@ -45,5 +46,8 @@ export default [
   },
   {
     name: resourceName.teachers,
+  },
+  {
+    name: resourceName.rooms,
   },
 ];

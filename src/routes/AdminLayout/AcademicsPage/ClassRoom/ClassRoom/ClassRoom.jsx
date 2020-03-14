@@ -23,18 +23,18 @@ class ClassRoom extends React.Component {
   }
 
   componentDidMount() {
-    const { getSubjectList } = this.props;
-    getSubjectList();
+    const { getRooms } = this.props;
+    getRooms();
   }
 
   render() {
     const {
-      subjects,
+      rooms,
       isLoading,
-      createSubject,
-      getSubjectList,
-      removeSubject,
-      updateSubject,
+      createRoom,
+      getRooms,
+      removeRoom,
+      updateRoom,
     } = this.props;
 
     const columns = [
@@ -55,11 +55,11 @@ class ClassRoom extends React.Component {
                   enableReinitialize="true"
                   initialValues={initialValues}
                   onSubmit={(values, { setSubmitting, resetForm }) => {
-                    createSubject(values).then(
+                    createRoom(values).then(
                       item => {
                         setSubmitting(false);
                         resetForm();
-                        getSubjectList();
+                        getRooms();
                       },
                       error => {
                         console.log('error subject', error);
@@ -79,7 +79,6 @@ class ClassRoom extends React.Component {
                         label={'Pojemność'}
                         props={props}
                       />
-                      )}
                       <Grid spacing={3} container>
                         <Grid item xs={12}>
                           <Box
@@ -112,7 +111,7 @@ class ClassRoom extends React.Component {
                 editable={{
                   onRowUpdate: (newData, oldData) =>
                     new Promise((resolve, reject) => {
-                      updateSubject(newData).then(
+                      updateRoom(newData).then(
                         () => {
                           resolve({
                             data: newData,
@@ -125,12 +124,12 @@ class ClassRoom extends React.Component {
                     }),
                   onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
-                      removeSubject(oldData.id).then(() => {
+                      removeRoom(oldData.id).then(() => {
                         resolve();
                       });
                     }),
                 }}
-                data={subjects}
+                data={rooms}
                 options={{
                   actionsColumnIndex: columns.length,
                   exportButton: true,
@@ -145,19 +144,19 @@ class ClassRoom extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { items = [], loading } = state.subject;
+  const { items = [], loading } = state.rooms;
 
   return {
-    subjects: getValue(items, []),
+    rooms: getValue(items, []),
     isLoading: loading,
   };
 };
 
 const actionCreators = {
-  getSubjectList: getList(resourceName.subject),
-  createSubject: create(resourceName.subject),
-  updateSubject: update(resourceName.subject),
-  removeSubject: remove(resourceName.subject),
+  getRooms: getList(resourceName.rooms),
+  createRoom: create(resourceName.rooms),
+  updateRoom: update(resourceName.rooms),
+  removeRoom: remove(resourceName.rooms),
 };
 
 const connectedPage = connect(mapStateToProps, actionCreators)(ClassRoom);

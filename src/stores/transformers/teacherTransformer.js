@@ -15,4 +15,6 @@ export const transform = (data, pagination) => {
   if (pagination) {
     return wrapPaginate(serializedData, pagination);
   }
+
+  return serializedData;
 };

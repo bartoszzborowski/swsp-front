@@ -3,9 +3,10 @@ import { getClient } from 'data/client/apolloClient';
 import {
   transform,
   transformToSave,
-} from 'stores/transformers/attendanceTransformer';
+} from 'stores/transformers/routineTransformer';
 import { handleResponse } from 'helpers';
-import { transform as sessionTransform } from '../stores/transformers/sessionTransformer';
+import { fragments } from './fragments';
+import head from 'lodash/head';
 
 const routinesService = {
   create,
@@ -16,92 +17,108 @@ const routinesService = {
   getAllByCustomFilter,
 };
 
-function remove() {}
-
-function getAll() {
+function getAll(customFilters = {}) {
   const QUERY = gql`
-    query($take: Int!, $page: Int!) {
-      routines(pagination: { take: $take, page: $page }) {
+    query($take: Int!, $page: Int!, $filters: FiltersRoutineType) {
+      routine(pagination: { take: $take, page: $page }, filters: $filters) {
         data {
-          id
-          name
-          status
+          ...RoutineInfo
         }
       }
     }
+    ${fragments.routines}
   `;
 
   return getClient()
-    .query({ query: QUERY, variables: { take: 100, page: 1 } })
+    .query({
+      query: QUERY,
+      variables: { take: 100, page: 1, filters: customFilters },
+    })
     .then(handleResponse)
     .then(result => {
       const {
-        data: { routines },
+        data: { routine },
       } = result;
-      const { data: RoutinesData } = routines;
-      return null;
+      const { data: RoutinesData } = routine;
+      return transform(RoutinesData);
     });
 }
 
 function getById() {}
 
-function create(attendance) {
+function create(routine) {
   const MUTATION = gql`
-    mutation($input: RoutinesInputType) {
-      createRoutines(input: $input) {
-        id
-        student_id
-        subject_id
-        status
-        timestamp
+    mutation($input: RoutineInputType) {
+      createRoutine(input: $input) {
+        ...RoutineInfo
       }
     }
+    ${fragments.routines}
   `;
 
-  const serializedAttendance = transformToSave(attendance);
+  const serializedAData = transformToSave(routine);
 
   return getClient()
     .mutate({
       mutation: MUTATION,
-      variables: { input: serializedAttendance },
+      variables: { input: serializedAData },
     })
     .then(handleResponse)
     .then(result => {
       const {
-        data: { createRoutines },
+        data: { createRoutine },
       } = result;
 
-      return null;
+      return head(transform([createRoutine]));
     });
 }
 
-function update(attendance) {
+function update(routine) {
   const MUTATION = gql`
-    mutation($input: [UpdateRoutinesInputType]) {
-      updateRoutines(input: $input) {
-        id
-        student_id
-        subject_id
-        status
-        timestamp
+    mutation($input: UpdateRoutineInputType) {
+      updateRoutine(input: $input) {
+        ...RoutineInfo
       }
     }
+    ${fragments.routines}
   `;
 
-  const serializedAttendance = transformToSave(attendance);
+  const serializedAData = transformToSave(routine);
 
   return getClient()
     .mutate({
       mutation: MUTATION,
-      variables: { input: serializedAttendance },
+      variables: { input: serializedAData },
     })
     .then(handleResponse)
     .then(result => {
       const {
-        data: { updateRoutines },
+        data: { updateRoutine },
       } = result;
 
-      return null;
+      return head(transform([updateRoutine]));
+    });
+}
+
+function remove(id) {
+  const MUTATION = gql`
+    mutation($ids: [Int]) {
+      deleteRoutine(ids: $ids)
+    }
+  `;
+
+  return getClient()
+    .mutate({
+      mutation: MUTATION,
+      variables: { ids: [id] },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { deleteRoutine },
+      } = result;
+
+      return { id, deleteRoutine };
     });
 }
 

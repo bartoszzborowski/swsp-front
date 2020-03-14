@@ -11,16 +11,14 @@ const teacherService = {
 function getAll(perPage = 100, page = 1) {
   const QUERY = gql`
     query($take: Int!, $page: Int!) {
-      teacher(pagination: { take: $take, page: $page }) {
+      teachers(pagination: { take: $take, page: $page }) {
         data {
           id
-          user {
-            ...UserInfo
-          }
+          ...UserInfo
         }
       }
     }
-    ${fragments.user}
+    ${fragments.userTeacher}
   `;
 
   return getClient()
@@ -28,10 +26,10 @@ function getAll(perPage = 100, page = 1) {
     .then(handleResponse)
     .then(result => {
       const {
-        data: { teacher },
+        data: { teachers },
       } = result;
-      const { data: TeachersData } = teacher;
-      return transform(TeachersData, teacher);
+      const { data: TeachersData } = teachers;
+      return transform(TeachersData);
     });
 }
 

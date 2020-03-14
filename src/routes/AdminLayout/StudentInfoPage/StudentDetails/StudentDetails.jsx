@@ -39,36 +39,43 @@ class StudentDetails extends React.Component {
     Object.keys(student).forEach(function(key) {
       rows.push(createData(student[key], key));
     });
-
+    const translate = {
+      id: 'Identyfikator użytkownika',
+      name: 'Imię',
+      lastName: 'Nazwisko',
+      className: 'Klasa',
+      parentName: 'Rodzic',
+      birthday: 'Data urodziny',
+      gender: 'Płeć',
+      phone: 'Telefon',
+      sessionName: 'Rok szkolny',
+      sectionName: 'Sekcja',
+    };
     return (
       <div>
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Card>
-              <CardHeader
-                title={'Szczególy ucznia'}
-                subheader={
-                  "Enter your school's details. This information will appear on reports, emails and receipts."
-                }
-              />
+              <CardHeader title={'Szczegóły ucznia'} />
               <CardContent>
-                <HorizontalTabs
-                  tabsLabel={['Profil', 'Egzaminy', 'Dokumenty', 'Timeline']}
-                >
+                <HorizontalTabs tabsLabel={['Profil', 'Egzaminy', 'Dokumenty']}>
                   <div>
                     <Typography variant="h6" id="tableTitle">
                       Dane osobowe
                     </Typography>
                     <Table aria-label="simple table">
                       <TableBody>
-                        {rows.map(row => (
-                          <TableRow key={row.key}>
-                            <TableCell component="th" scope="row">
-                              {row.key}
-                            </TableCell>
-                            <TableCell align="left">{row.value}</TableCell>
-                          </TableRow>
-                        ))}
+                        {rows.map(
+                          row =>
+                            translate.hasOwnProperty(row.key) && (
+                              <TableRow key={row.key}>
+                                <TableCell component="th" scope="row">
+                                  {translate[row.key]}
+                                </TableCell>
+                                <TableCell align="left">{row.value}</TableCell>
+                              </TableRow>
+                            )
+                        )}
                       </TableBody>
                     </Table>
                     <Box textAlign={'center'} style={{ marginTop: '20px' }}>
@@ -87,9 +94,8 @@ class StudentDetails extends React.Component {
                       </GradientButton>
                     </Box>
                   </div>
-                  <div>div2</div>
-                  <div>div3</div>
-                  <div>div4</div>
+                  <div>Funkcjonalność dostępna w późniejszym czasie</div>
+                  <div>Funkcjonalność dostępna w późniejszym czasie</div>
                 </HorizontalTabs>
               </CardContent>
             </Card>

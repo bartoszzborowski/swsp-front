@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'mixins';
 
+$debug: false;
 
 * {
   @if ($debug) {
@@ -41,7 +42,6 @@ body {
   overflow-y: visible;
   background-color: $white
 }
-
 
 .MuiButton-label {
   font-size: remcalc(10);

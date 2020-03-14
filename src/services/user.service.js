@@ -14,6 +14,7 @@ const userService = {
   getAll,
   getById,
   update,
+  getStats,
   delete: _delete,
 };
 
@@ -24,6 +25,7 @@ function login(username, password) {
         id
         email
         token
+        roles
       }
     }
   `;
@@ -45,6 +47,65 @@ function login(username, password) {
 function logout() {
   // remove user from local storage to log user out
   localStorage.removeItem('user');
+}
+
+function getStats() {
+  const QUERY = gql`
+    query($take: Int!, $page: Int!) {
+      studentCount: users(
+        pagination: { take: $take, page: $page }
+        filters: { role: student }
+      ) {
+        data {
+          id
+        }
+        total
+      }
+      teacherCount: users(
+        pagination: { take: $take, page: $page }
+        filters: { role: teacher }
+      ) {
+        data {
+          id
+        }
+        total
+      }
+      parentCount: users(
+        pagination: { take: $take, page: $page }
+        filters: { role: parent }
+      ) {
+        data {
+          id
+        }
+        total
+      }
+      all: users(pagination: { take: $take, page: $page }) {
+        data {
+          id
+        }
+        total
+      }
+    }
+  `;
+
+  return getClient()
+    .query({
+      query: QUERY,
+      variables: { take: 1, page: 1 },
+    })
+    .then(handleResponse)
+    .then(result => {
+      const {
+        data: { studentCount, teacherCount, parentCount, all },
+      } = result;
+
+      return {
+        teacher: teacherCount.total,
+        student: studentCount.total,
+        parent: parentCount.total,
+        all: all.total,
+      };
+    });
 }
 
 function getAll(perPage = 100, page = 1) {
@@ -72,7 +133,10 @@ function getAll(perPage = 100, page = 1) {
   `;
 
   return getClient()
-    .query({ query: QUERY, variables: { take: perPage, page: page } })
+    .query({
+      query: QUERY,
+      variables: { take: perPage, page: page },
+    })
     .then(handleResponse)
     .then(result => {
       const {

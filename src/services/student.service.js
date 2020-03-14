@@ -17,10 +17,10 @@ const studentService = {
   getByCustomFilters,
 };
 
-function getAll(perPage = 100, page = 1) {
+function getAll(perPage = 100, page = 1, customFilters = {}) {
   const QUERY = gql`
-    query($take: Int!, $page: Int!) {
-      students(pagination: { take: $take, page: $page }) {
+    query($take: Int!, $page: Int!, $filters: FiltersStudentInputType) {
+      students(pagination: { take: $take, page: $page }, filters: $filters) {
         data {
           id
           ...UserInfo
@@ -46,7 +46,10 @@ function getAll(perPage = 100, page = 1) {
   `;
 
   return getClient()
-    .query({ query: QUERY, variables: { take: perPage, page: page } })
+    .query({
+      query: QUERY,
+      variables: { take: perPage, page: page, filters: customFilters },
+    })
     .then(handleResponse)
     .then(result => {
       const {
@@ -93,7 +96,7 @@ function getById(id) {
         data: { students },
       } = result;
       const { data: studentData = {} } = students;
-      console.log('studentsData', students);
+
       return head(StudentTransform(studentData, students).data);
     });
 }

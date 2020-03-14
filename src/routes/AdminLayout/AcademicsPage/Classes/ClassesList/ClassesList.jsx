@@ -10,14 +10,13 @@ import GradientButton from 'components/Button/GradientButton';
 import DoneIcon from '@material-ui/icons/Done';
 import Box from '@material-ui/core/Box';
 import { getValue } from 'helpers';
-import { create, getList, remove, update } from 'stores/actions';
+import { create, getList, remove, update, userActions } from 'stores/actions';
 import { resourceName } from 'stores/resources';
 import { connect } from 'react-redux';
 import CheckboxGroup from 'routes/AdminLayout/components/CheckboxGroup/CheckboxGroup';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import AddUsersToClass from './AddUsersToClass';
 import { SectionSelect } from '../../../components/Selects';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -29,7 +28,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import searchService from '../../../../../services/search.service';
+import searchService from 'services/search.service';
+import { withSnackbar } from 'notistack';
+import studentService from 'services/student.service';
 
 class ClassesList extends PureComponent {
   constructor(props) {
@@ -39,10 +40,13 @@ class ClassesList extends PureComponent {
       checkbox: [],
       open: false,
       userList: [],
+      userListCopy: [],
+      section: null,
     };
 
     this.onChange = this.onChange.bind(this);
     this.editRecordHandle = this.editRecordHandle.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
     // this.openModal = this.openModal.bind(this);
   }
 
@@ -52,12 +56,118 @@ class ClassesList extends PureComponent {
     getSectionList();
   }
 
+  selectSectionAction(selectedSection = null) {
+    if (selectedSection) {
+      const { currentClass } = this.state;
+      const filters = {
+        section_id: selectedSection.value,
+        class_id: currentClass.id,
+      };
+
+      studentService.getByCustomFilters(filters).then(
+        result => {
+          const { data } = result;
+          const students =
+            data.length > 0 &&
+            data.map(item => {
+              return {
+                value: item.id,
+                label: item.name,
+              };
+            });
+          this.setState({ userList: students, userListCopy: students });
+        },
+        errors => {
+          console.log('errors', errors);
+        }
+      );
+    }
+  }
+
   onChange(values) {
     this.setState({ checkbox: { ...values } });
   }
 
   editRecordHandle(event, rowData) {
     this.setState({ currentClass: rowData });
+  }
+
+  addStudent(users) {
+    this.setState(
+      state => ({ userList: users === null ? [] : users }),
+      () => this.forceUpdate()
+    );
+    // users &&
+    //   users.map(user => {
+    //     this.setState(
+    //       state => ({ userList: users }),
+    //       () => this.forceUpdate()
+    //     );
+    //   });
+  }
+
+  deleteUser(user) {
+    const { userList } = this.state;
+    this.setState(
+      state => ({ userList: state.userList.delete(user) }),
+      () => this.forceUpdate()
+    );
+  }
+
+  saveUsers() {
+    const {
+      userList = [],
+      userListCopy = [],
+      currentClass,
+      section,
+    } = this.state;
+    const { updateStudent } = this.props;
+
+    if (section === null) {
+      this.props.enqueueSnackbar('Musisz wybrać sekcję przed zapisem.', {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
+      });
+      return null;
+    }
+
+    getValue(userListCopy, [])
+      .filter(item => !getValue(userList, []).includes(item))
+      .map(user => {
+        updateStudent({
+          id: user.value,
+          classId: { value: null, options: { check: false } },
+          sectionId: { value: null, options: { check: false } },
+        }).then(
+          result => {
+            console.log('success update');
+          },
+          error => {
+            console.log('error update');
+          }
+        );
+      });
+
+    getValue(userList, []).length > 0 &&
+      userList
+        .filter(item => !getValue(userListCopy, []).includes(item))
+        .map(user => {
+          updateStudent({
+            id: user.value,
+            classId: currentClass.id,
+            sectionId: section.value,
+          }).then(
+            result => {
+              console.log('success update');
+            },
+            error => {
+              console.log('error update');
+            }
+          );
+        });
   }
 
   render() {
@@ -70,11 +180,11 @@ class ClassesList extends PureComponent {
       removeClass,
       updateClass,
     } = this.props;
-    const { currentClass, checkbox = [], open } = this.state;
+    const { currentClass, checkbox = [], open, userList = [] } = this.state;
 
     const initialValues = currentClass.name
       ? { classes: currentClass.name }
-      : { classes: null };
+      : { classes: undefined };
 
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
@@ -83,8 +193,8 @@ class ClassesList extends PureComponent {
         title: 'Sekcja',
         field: 'sections',
         render: rowData =>
-          rowData.sections.map(item => {
-            return <li>{item.name}</li>;
+          rowData.sections.map((item, index) => {
+            return <li key={index}>{item.name}</li>;
           }),
       },
     ];
@@ -105,7 +215,7 @@ class ClassesList extends PureComponent {
 
     const promiseOptions = inputValue =>
       new Promise(resolve => {
-        searchService.search(inputValue, 'parents').then(result => {
+        searchService.search(inputValue, 'students').then(result => {
           resolve(result);
         });
       });
@@ -116,26 +226,35 @@ class ClassesList extends PureComponent {
           setClick={click => (this.toggleModal = click)}
           open={open}
           submit={() => {
-            console.log('submiting');
+            this.saveUsers();
+            this.toggleModal();
           }}
         >
           {props => {
             return (
-              <div>
+              <div style={{ minHeight: '200px' }}>
                 <Grid container spacing={4}>
-                  <Grid item md={6} xs={12} style={{ minHeight: '100px' }}>
+                  <Grid item md={6} xs={12}>
                     <SectionSelect
-                      sections={currentClass.sections}
+                      sections={currentClass.sections || []}
                       onChange={value => {
-                        console.log('onChange', value);
+                        this.setState({ section: value });
+                        this.selectSectionAction(value);
                       }}
                     />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
                     <AsyncSelect
-                      onChange={result => props.onChange(result.value)}
+                      key={JSON.stringify(userList)}
+                      isMulti
+                      onChange={result => this.addStudent(result)}
                       cacheOptions
                       loadOptions={promiseOptions}
-                      defaultOptions="true"
+                      defaultOption
+                      defaultValue={userList}
+                      placeholder="Wybierz ucznia..."
                     />
+
                     {/*<div*/}
                     {/*  onClick={() => {*/}
                     {/*    props.toggleModal();*/}
@@ -145,7 +264,7 @@ class ClassesList extends PureComponent {
                     {/*  Close*/}
                     {/*</div>*/}
                   </Grid>
-                  <Grid xs={12}>
+                  <Grid>
                     <div>
                       <Typography
                         style={{ paddingLeft: '10px' }}
@@ -155,34 +274,26 @@ class ClassesList extends PureComponent {
                         Lista użytkowników
                       </Typography>
                       <List>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <AccountCircleIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary="Single-line item" />
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="delete">
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      </List>
-                      <List>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <AccountCircleIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary="Single-line item" />
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="delete">
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
+                        {userList.length > 0 &&
+                          userList.map((user, index) => {
+                            return (
+                              <ListItem key={index}>
+                                <ListItemAvatar>
+                                  <Avatar>
+                                    <AccountCircleIcon />
+                                  </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary={user.label} />
+                                <ListItemSecondaryAction>
+                                  <IconButton edge="end" aria-label="delete">
+                                    <DeleteIcon
+                                      onClick={() => this.deleteUser(user)}
+                                    />
+                                  </IconButton>
+                                </ListItemSecondaryAction>
+                              </ListItem>
+                            );
+                          })}
                       </List>
                     </div>
                   </Grid>
@@ -288,7 +399,7 @@ class ClassesList extends PureComponent {
                 actions={[
                   {
                     icon: 'edit',
-                    tooltip: 'Save User',
+                    tooltip: 'Edytuj klasę',
                     onClick: this.editRecordHandle,
                   },
                   {
@@ -296,6 +407,7 @@ class ClassesList extends PureComponent {
                     tooltip: 'Dodaj uczniów do klasy',
                     onClick: (event, rowData) => {
                       this.editRecordHandle(event, rowData);
+                      this.setState({ userList: [] });
                       this.toggleModal();
                     },
                   },
@@ -331,8 +443,11 @@ const actionCreators = {
   createClass: create(resourceName.classes),
   updateClass: update(resourceName.classes),
   removeClass: remove(resourceName.classes),
+  updateStudent: update(resourceName.student),
 };
 
-const connectedPage = connect(mapStateToProps, actionCreators)(ClassesList);
+const connectedPage = withSnackbar(
+  connect(mapStateToProps, actionCreators)(ClassesList)
+);
 
 export { connectedPage as ClassesList };

@@ -14,7 +14,7 @@ class App extends React.Component {
 
     history.listen((location, action) => {
       // clear alert on location change
-      console.log('history');
+      // console.log('history');
     });
   }
 
@@ -26,6 +26,7 @@ class App extends React.Component {
           exact={route.exact}
           component={route.component}
           layout={route.layout}
+          roles={route.roles}
           key={route.path}
         />
       ) : (

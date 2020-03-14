@@ -68,7 +68,7 @@ class SettingSchoolChoice extends PureComponent {
           <CardHeader
             title={'Wybierz szkołę'}
             subheader={
-              "Enter your school's details. This information will appear on reports, emails and receipts."
+              'Poniżej znajdziesz listę szkół zarejestrowanych w systemie. Wybierz jedną, aby przejść do pozostałnych ustawień systemu'
             }
           />
 

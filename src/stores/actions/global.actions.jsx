@@ -20,6 +20,7 @@ const services = {
   [resourceName.sections]: require('services/sections.service'),
   [resourceName.schools]: require('services/school.service'),
   [resourceName.teachers]: require('services/teacher.service'),
+  [resourceName.rooms]: require('services/classRooms.service'),
 };
 
 export const getList = scope => filters => {

@@ -1,6 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import withStyles from '@material-ui/core/styles/withStyles';
+
+const styles = {
+  root: {
+    marginLeft: 20,
+  },
+};
 
 const StyledButton = styled(Button)`
   background-image: linear-gradient(
@@ -21,6 +29,23 @@ const StyledButton = styled(Button)`
   margin-top: 20px;
 `;
 
+const SpinnerAdornment = withStyles(styles)(props => (
+  <CircularProgress
+    style={{ marginLeft: '20px', color: 'white', marginTop: '-5px' }}
+    size={20}
+  />
+));
+
 export default function GradientButton(props) {
-  return <StyledButton {...props}>{props.children}</StyledButton>;
+  const { children, isLoading, ...rest } = props;
+  if (isLoading) {
+    console.log('isLoading', isLoading);
+    // delete props.isLoading;
+  }
+  return (
+    <StyledButton {...props}>
+      {children}
+      {isLoading && <SpinnerAdornment {...rest} />}
+    </StyledButton>
+  );
 }

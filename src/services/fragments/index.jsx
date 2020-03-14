@@ -21,6 +21,51 @@ export const classesFragment = {
 };
 
 export const fragments = {
+  rooms: gql`
+    fragment RoomInfo on RoomType {
+      id
+      name
+      school_id
+      capacity
+    }
+  `,
+  routines: gql`
+    fragment RoutineInfo on RoutineType {
+      id
+      class_id
+      section_id
+      subject_id
+      subject {
+        id
+        name
+      }
+      teacher_id
+      room_id
+      starting_hour
+      ending_hour
+      starting_minute
+      ending_minute
+      lesson_number
+      day
+      school_id
+    }
+  `,
+  userTeacher: gql`
+    fragment UserInfo on TeacherType {
+      user {
+        id
+        email
+        name
+        last_name
+        address
+        phone
+        birthday
+        blood_group
+        gender
+        token
+      }
+    }
+  `,
   user: gql`
     fragment UserInfo on StudentType {
       user {

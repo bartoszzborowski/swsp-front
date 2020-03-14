@@ -2,19 +2,14 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import MaterialTable from 'material-table';
-import {
-  redirectTo,
-  STUDENT_INFO_CREATE_PAGE,
-  STUDENT_INFO_DETAILS_PAGE,
-  USER_INFO_CREATE_PAGE,
-  USER_INFO_EDIT_PAGE,
-} from 'config/routes';
+import { redirectTo, USER_INFO_EDIT_PAGE } from 'config/routes';
 
 import { getList, update, remove } from 'stores/actions';
 import { connect } from 'react-redux';
 import { resourceName } from 'stores/resources';
 import { getValue } from 'helpers';
 import userService from 'services/user.service';
+import { rolesTable } from 'helpers/roles';
 
 class UsersList extends React.Component {
   constructor(props) {
@@ -29,10 +24,22 @@ class UsersList extends React.Component {
     const { isLoading, classes, updateStudent, deleteStudent } = this.props;
     const { students } = this.state;
 
+    const roleLookup =
+      rolesTable &&
+      rolesTable.reduce(
+        (obj, item) => ((obj[item.value] = item.label), obj),
+        {}
+      );
+
     const columns = [
       { title: 'Id', field: 'id', editable: 'never' },
       { title: 'Imię', field: 'name' },
       { title: 'Email', field: 'email' },
+      {
+        title: 'Rola',
+        field: 'role',
+        lookup: roleLookup,
+      },
       { title: 'Adres', field: 'address' },
       { title: 'Telefon', field: 'phone' },
       { title: 'Data urodzin', field: 'birthday' },
