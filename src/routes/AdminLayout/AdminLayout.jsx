@@ -19,9 +19,11 @@ import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import SettingsIcon from '@material-ui/icons/Settings';
+import CardMembershipIcon from '@material-ui/icons/CardMembership';
 
 import style from './AdminLayout.module.scss';
 import {
+  CERTIFICATES_LIST,
   CLASS_ROOM_LIST_PAGE,
   CLASS_ROUTINE,
   CLASSES_LIST_PAGE,
@@ -97,6 +99,19 @@ class AdminLayout extends React.Component {
         href: '/dashboard',
         icon: <DashboardIcon />,
         roles: [roles.admin.value, roles.student.value],
+      },
+      {
+        title: 'Certfikaty',
+        href: getLink(USERS_PAGE),
+        icon: <CardMembershipIcon />,
+        roles: [roles.admin.value],
+        nested: [
+          {
+            title: 'List użytkowników',
+            href: getLink(CERTIFICATES_LIST),
+            roles: [roles.admin.value],
+          },
+        ],
       },
       {
         title: 'Użytkownicy',
@@ -226,6 +241,7 @@ class AdminLayout extends React.Component {
         ],
       },
     ];
+    console.log('pages', pages);
     const maritalStatus = [
       {
         value: '1',

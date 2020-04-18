@@ -34,6 +34,7 @@ import { ClassRoom } from 'routes/AdminLayout/AcademicsPage/ClassRoom/ClassRoom'
 import { ClassRoutine } from 'routes/AdminLayout/AcademicsPage/ClassRoutine/ClassRoutine';
 import { SettingSchoolChoice } from '../routes/AdminLayout/SettingsPage/SettingSchoolChoice/SettingSchoolChoice';
 import { roles } from '../helpers/roles';
+import { CertificatesList } from '../routes/AdminLayout/CertificatesPage/CertificatesList/CertificatesList';
 
 export const LOGIN_PAGE = 'login_page';
 export const REGISTER_PAGE = 'register_page';
@@ -74,6 +75,9 @@ export const CLASS_ROUTINE = 'class_routine';
 
 export const SCHOOL_SELECT_PAGE = 'school_select_page';
 
+export const CERTIFICATES_PAGE = 'certificates_page';
+export const CERTIFICATES_LIST = 'certificates_list';
+
 export const getLink = name => {
   const route = head(Routes.filter(x => x.slug === name));
   return route ? route.path : null;
@@ -91,6 +95,18 @@ export const redirectTo = (name, parameters = []) => {
     history.push(link);
   }
 };
+
+const certificateRouting = [
+  {
+    slug: CERTIFICATES_LIST,
+    private: true,
+    exect: false,
+    path: '/certificates/list',
+    component: CertificatesList,
+    layout: AdminLayout,
+    roles: [roles.admin.value],
+  },
+];
 
 const academicRouting = [
   {
@@ -304,6 +320,7 @@ export const Routes = [
     roles: [roles.admin.value],
   },
   ...academicRouting,
+  ...certificateRouting,
 ];
 
 console.log('DefaultRoutes', Routes);
