@@ -1,0 +1,16 @@
+@import 'src/scss/base/shared';
+
+.root {
+  height: 100vh;
+}
+
+.paper {
+  margin: remcalc(100);
+}
+
+.image {
+  background-image: url('/static/images/SWSP.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}

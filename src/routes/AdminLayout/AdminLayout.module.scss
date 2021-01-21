@@ -1,0 +1,63 @@
+@import 'src/scss/base/shared';
+
+.root {
+  display: flex;
+}
+
+.appBar {
+  z-index: 100;
+  //background-color: white;
+  //background: linear-gradient(90deg, #03e396 0%, #03e396 100%);
+  background: #1f2532;
+  transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms,margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+}
+
+.appBarShift {
+  margin-left: remcalc(240);
+  width: calc(100% - 300px);
+  transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms,margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+}
+
+.menuButton {
+  margin-right: 36px;
+}
+
+.drawer {
+  width: remcalc(300);
+  flex-shrink: 0;
+  white-space: nowrap;
+  //background-color: #1f2532;
+}
+
+.drawerOpen {
+  width: remcalc(300);
+  transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms,margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+}
+
+.drawerClose {
+  overflow-x: hidden;
+  width: remcalc(45);
+  z-index: 1;
+  transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: remcalc(7.5);
+}
+
+.content {
+  flex-grow: 1;
+  padding: remcalc(60)
+}
+
+.appContentShift {
+  margin-left: remcalc(280);
+  transition: width 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms,margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+}
+
+.hide {
+  display: none;
+}

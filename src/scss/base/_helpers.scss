@@ -1,0 +1,69 @@
+/* Breakpoints definition for JS */
+.js-rvp {
+  font-family: 'xs';
+
+  @include breakpoint(sm) {
+    font-family: 'sm';
+  }
+
+  @include breakpoint(md) {
+    font-family: 'md';
+  }
+
+  @include breakpoint(lg) {
+    font-family: 'lg';
+  }
+
+  @include breakpoint(xlg) {
+    font-family: 'xlg';
+  }
+}
+
+/* Helper Classes */
+%is-hidden {
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip: rect(0, 0, 0, 0);
+  position: absolute;
+}
+
+/* Spacing and Classes Prefixes */
+$spaces: (4, 8, 12, 16, 20, 24, 28, 32, 36, 40);
+$prefixes: (sm, md, lg, xlg);
+
+/* Default Pseudo Classes Styles */
+[class*="u-"][class*="-mb"] {
+  &:after {
+    display: block;
+    content: '';
+    // flex: 0 0 100%; // Add in case when flex layout fails
+  }
+}
+
+/* Generate Mobile Spacing */
+@each $space in $spaces {
+  .u-xs-mb-#{$space} {
+    &:after {
+      height: #{$space}px;
+      line-height: #{$space}px;
+    }
+  }
+}
+
+/* Generate Other Breakpoints Spacing */
+@each $space in $spaces {
+  @each $prefix in $prefixes {
+    .u-#{$prefix}-mb-#{$space} {
+      @include breakpoint(#{$prefix}) {
+        &:after {
+          height: #{$space}px;
+          line-height: #{$space}px;
+        }
+      }
+    }
+  }
+}

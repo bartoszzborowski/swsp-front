@@ -1,0 +1,21 @@
+@import 'src/scss/base/shared';
+
+.infoCard {
+  padding: remcalc(25) remcalc(10);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  .total {
+    margin-top: 10px;
+  }
+
+  .count {
+    color: $primary;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+}
